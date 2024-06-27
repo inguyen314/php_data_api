@@ -649,7 +649,11 @@ function find_location_id_datman_extents($db, $location_id) {
 		$sql = "select location_id
 					,parameter_id
 					,extract(YEAR from earliest_time) as min_date_year
+					,extract(MONTH from earliest_time) as min_date_month
+					,extract(DAY from earliest_time) as min_date_day
 					,extract(YEAR from latest_time) as max_date_year 
+					,extract(MONTH from latest_time) as max_date_month
+					,extract(DAY from latest_time) as max_date_day
 					,ts_id
 				from CWMS_20.AV_TS_EXTENTS_LOCAL
 				where ts_id like '%datman-rev'
@@ -665,7 +669,11 @@ function find_location_id_datman_extents($db, $location_id) {
 				"location_id" => $row['LOCATION_ID'],
 				"parameter_id" => $row['PARAMETER_ID'],
 				"min_date_year" => $row['MIN_DATE_YEAR'],
+				"min_date_month" => $row['MIN_DATE_MONTH'],
+				"min_date_day" => $row['MIN_DATE_DAY'],
 				"max_date_year" => $row['MAX_DATE_YEAR'],
+				"max_date_month" => $row['MAX_DATE_MONTH'],
+				"max_date_day" => $row['MAX_DATE_DAY'],
 				"ts_id" => $row['TS_ID']			
 			];
 		}
