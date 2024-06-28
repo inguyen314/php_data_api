@@ -692,43 +692,40 @@ function find_location_id_datman_extents($db, $location_id) {
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
 function find_tsid_extents($db, $cwms_ts_id) {
-	$stmnt_query = null;
-	$data = null;
-	
-	try {		
-		$sql = "select location_id
-					,parameter_id
-					,earliest_time
-					,latest_time
-					,ts_id
-				from CWMS_20.AV_TS_EXTENTS_LOCAL
-				where ts_id = '".$cwms_ts_id."'
-				order by location_id asc";
-		
-		$stmnt_query = oci_parse($db, $sql);
-		$status = oci_execute($stmnt_query);
+    $stmnt_query = null;
+    $data = null;
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+    try {
+        $sql = "SELECT location_id,
+                       parameter_id,
+                       earliest_time,
+                       latest_time,
+                       ts_id
+                FROM CWMS_20.AV_TS_EXTENTS_LOCAL
+                WHERE ts_id = '".$cwms_ts_id."'
+                ORDER BY location_id ASC";
 
-			$data = (object) [
-				"location_id" => $row['LOCATION_ID'],
-				"parameter_id" => $row['PARAMETER_ID'],
-				"earliest_time" => $row['EARLIEST_TIME'],
-				"latest_time" => $row['LATEST_TIME'],
-				"ts_id" => $row['TS_ID']		
-			];
-		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
-		trigger_error(htmlentities($e['message']), E_USER_ERROR);
+        $stmnt_query = oci_parse($db, $sql);
+        $status = oci_execute($stmnt_query);
 
-		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
-	}
-	return $data;
+        while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+            $data = (object) [
+                "location_id" => $row['LOCATION_ID'],
+                "parameter_id" => $row['PARAMETER_ID'],
+                "earliest_time" => date('c', strtotime($row['EARLIEST_TIME'])),
+                "latest_time" => date('c', strtotime($row['LATEST_TIME'])),
+                "ts_id" => $row['TS_ID']
+            ];
+        }
+    } catch (Exception $e) {
+        $e = oci_error($db);
+        trigger_error(htmlentities($e['message']), E_USER_ERROR);
+
+        return null;
+    } finally {
+        oci_free_statement($stmnt_query);
+    }
+    return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
