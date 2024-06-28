@@ -128,6 +128,12 @@
             openURL(baseUrl, { location_id: userInput });
         }
 
+        function tsidExtents() {
+            const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_tsid_extents.php";
+            const userInput = document.getElementById("get_tsid_extents").value;
+            openURL(baseUrl, { cwms_ts_id: userInput });
+        }
+
         function locationIdLakeInflowExtents() {
             const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_location_id_lake_inflow_extents.php";
             const userInput = document.getElementById("location_id_lake_inflow_extents").value;
@@ -466,6 +472,14 @@
         <label>location_id: </label>
         <input type="text" id="location_id_datman_extents" value="Chester-Mississippi">
         <button onclick="locationIdDatmanExtents()">Submit</button>
+    </div>
+
+    <h2>Get Tsid Extents</h2>
+    <p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_tsid_extents.php</p>
+    <div>
+        <label>cwms_ts_id: </label>
+        <input type="text" id="get_tsid_extents" value="Chester-Mississippi.Stage.Inst.30Minutes.0.lrgsShef-rev">
+        <button onclick="tsidExtents()">Submit</button>
     </div>
 
     <h2>Get Location Id Lake Inflow Extents</h2>
