@@ -700,6 +700,7 @@ function find_tsid_extents($db, $cwms_ts_id) {
                        parameter_id,
                        earliest_time,
                        latest_time,
+                       version_time,
                        ts_id
                 FROM CWMS_20.AV_TS_EXTENTS_LOCAL
                 WHERE ts_id = '".$cwms_ts_id."'
@@ -709,11 +710,17 @@ function find_tsid_extents($db, $cwms_ts_id) {
         $status = oci_execute($stmnt_query);
 
         while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+            $version_time = null;
+            if ($row['VERSION_TIME'] !== null) {
+                $version_time = date('c', strtotime($row['VERSION_TIME']));
+            }
+
             $data = (object) [
                 "location_id" => $row['LOCATION_ID'],
                 "parameter_id" => $row['PARAMETER_ID'],
                 "earliest_time" => date('c', strtotime($row['EARLIEST_TIME'])),
                 "latest_time" => date('c', strtotime($row['LATEST_TIME'])),
+                "version_time" => $version_time,
                 "ts_id" => $row['TS_ID']
             ];
         }
