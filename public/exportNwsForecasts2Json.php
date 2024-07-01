@@ -28,7 +28,7 @@ $db = db_connect($db_host, $db_port, $db_service_name, $db_user, $db_pass);
 
 if ($db) {
     // Path to the JSON file
-    $jsonFile = 'json/gage_control.json';
+    $jsonFile = '/wm/mvs/wm_web/var/apache2/2.4/htdocs/php_data_api/public/json/gage_control.json';
 
     // Read the JSON file
     $jsonContent = file_get_contents($jsonFile);
