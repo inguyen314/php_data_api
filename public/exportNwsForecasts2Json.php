@@ -1,23 +1,27 @@
 <?php
-require_once('../private/initialize.php'); 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+require_once "/wm/mvs/wm_web/var/apache2/2.4/htdocs/globals_mvs.php";
+require_once "/wm/mvs/wm_web/var/apache2/2.4/htdocs/php_data_api/private/query_functions_river_reservoir.php";
 
-ini_set("xdebug.var_display_max_children", '-1');
-ini_set("xdebug.var_display_max_data", '-1');
-ini_set("xdebug.var_display_max_depth", '-1');
+function db_connect($db_host, $db_port, $db_service_name, $db_user, $db_pass) {
+    $dbstr = "(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=" . $db_host . ")(PORT=" . $db_port . "))(CONNECT_DATA=(SERVICE_NAME=" . $db_service_name . ")))";
+    // Attempt to connect
+    $conn = oci_pconnect($db_user, $db_pass, $dbstr);
 
-date_default_timezone_set('America/Chicago');
-if (date_default_timezone_get()) {
+    // Check for connection success
+    if (!$conn) {
+        $error = oci_error();  // Fetch the OCI error
+        die("Connection failed: " . $error['message']);
+    }
+
+    return $conn;
 }
-if (ini_get('date.timezone')) {
+
+
+function db_disconnect($conn) {
+    if ($conn) {
+        oci_close($conn);
+    }
 }
-
-// Set the content type to application/json
-header('Content-Type: application/json');
-
-$set_options = set_options($db);
 
 // Usage
 $db = db_connect($db_host, $db_port, $db_service_name, $db_user, $db_pass);
