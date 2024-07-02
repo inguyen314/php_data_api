@@ -1,6 +1,6 @@
 <?php
 require_once "/wm/mvs/wm_web/var/apache2/2.4/htdocs/globals_mvs.php";
-require_once "/wm/mvs/wm_web/var/apache2/2.4/htdocs/php_data_api/private/query_functions_river_reservoir.php";
+require_once "/wm/mvs/wm_web/var/apache2/2.4/htdocs/php_data_api/private/query_functions_gage_data.php";
 
 function db_connect($db_host, $db_port, $db_service_name, $db_user, $db_pass) {
     $dbstr = "(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=" . $db_host . ")(PORT=" . $db_port . "))(CONNECT_DATA=(SERVICE_NAME=" . $db_service_name . ")))";
@@ -22,6 +22,15 @@ function db_disconnect($conn) {
         oci_close($conn);
     }
 }
+
+
+// Set the timezone to Central Time
+date_default_timezone_set('America/Chicago');
+
+// Get today's date and add days to get the next three days
+$nws_day1_date = date('m-d-Y', strtotime('+1 day'));
+$nws_day2_date = date('m-d-Y', strtotime('+2 day'));
+$nws_day3_date = date('m-d-Y', strtotime('+3 day'));
 
 // Usage
 $db = db_connect($db_host, $db_port, $db_service_name, $db_user, $db_pass);
@@ -83,18 +92,17 @@ if ($db) {
 
     // Process each extracted tsid with get_crest_data
     foreach ($tsidStageForecastValues as $tsid) {
-        $crest = get_crest_data($db, $tsid);
+        $crest = find_nws_forecast2($db, $tsid, $nws_day1_date, $nws_day2_date, $nws_day3_date);
+        // var_dump($crest);
 
         // Check if the desired object exists in $crest
-        if (isset($crest->value)) {
+        if (isset($crest->value_day1)) {
             // Add the data directly to the array without overwriting
-            $allCrestJson[$tsid]['location_id'] = $crest->location_id;
-            $allCrestJson[$tsid]['cwms_ts_id'] = $crest->cwms_ts_id;
-            $allCrestJson[$tsid]['date_time'] = $crest->date_time;
-            $allCrestJson[$tsid]['value'] = round(floatval($crest->value), 2);
-            $allCrestJson[$tsid]['unit_id'] = $crest->unit_id;
-            $allCrestJson[$tsid]['quality_code'] = $crest->quality_code;
-            $allCrestJson[$tsid]['data_entry_date'] = $crest->data_entry_date;
+            $allCrestJson[$tsid]['data_entry_date_day1'] = $crest->data_entry_date_day1;
+            $allCrestJson[$tsid]['data_entry_date_cst1'] = $crest->data_entry_date_cst1;
+            $allCrestJson[$tsid]['cwms_ts_id_day1'] = $crest->cwms_ts_id_day1;
+            $allCrestJson[$tsid]['value_day1'] = round(floatval($crest->value_day1), 2);
+            $allCrestJson[$tsid]['location_id_day1'] = $crest->location_id_day1;
         } else {
             // Handle the case where the 'value' is not found
             // You may want to set a default value or log an error

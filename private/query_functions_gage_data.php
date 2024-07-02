@@ -319,6 +319,7 @@ function find_nws_forecast2($db, $cwms_ts_id, $nws_day1_date, $nws_day2_date, $n
 					,unit_id
 					,to_char(cwms_util.change_timezone(data_entry_date, 'UTC', 'CST6CDT'), 'mm/dd HH24:MI') as data_entry_date
 					,to_char(cwms_util.change_timezone(data_entry_date, 'UTC', 'CST6CDT'), 'mm-dd-yyyy HH24:MI') as data_entry_date_org
+					,(cwms_util.change_timezone(data_entry_date, 'UTC', 'CST6CDT')) as data_entry_date_cst
 				from CWMS_20.AV_TSV_DQU
 				where cwms_ts_id = '".$cwms_ts_id."'
 					and unit_id = 'ft'
@@ -333,6 +334,7 @@ function find_nws_forecast2($db, $cwms_ts_id, $nws_day1_date, $nws_day2_date, $n
 					,unit_id
 					,to_char(cwms_util.change_timezone(data_entry_date, 'UTC', 'CST6CDT'), 'mm/dd HH24:MI') as data_entry_date
 					,to_char(cwms_util.change_timezone(data_entry_date, 'UTC', 'CST6CDT'), 'mm-dd-yyyy HH24:MI') as data_entry_date_org
+					,(cwms_util.change_timezone(data_entry_date, 'UTC', 'CST6CDT')) as data_entry_date_cst
 				from CWMS_20.AV_TSV_DQU
 				where cwms_ts_id = '".$cwms_ts_id."'
 					and unit_id = 'ft'
@@ -347,15 +349,16 @@ function find_nws_forecast2($db, $cwms_ts_id, $nws_day1_date, $nws_day2_date, $n
 					,unit_id
 					,to_char(cwms_util.change_timezone(data_entry_date, 'UTC', 'CST6CDT'), 'mm/dd HH24:MI') as data_entry_date
 					,to_char(cwms_util.change_timezone(data_entry_date, 'UTC', 'CST6CDT'), 'mm-dd-yyyy HH24:MI') as data_entry_date_org
+					,(cwms_util.change_timezone(data_entry_date, 'UTC', 'CST6CDT')) as data_entry_date_cst
 				from CWMS_20.AV_TSV_DQU
 				where cwms_ts_id = '".$cwms_ts_id."'
 					and unit_id = 'ft'
 					and date_time = to_date('".$nws_day3_date."' || '12:00' ,'mm-dd-yyyy hh24:mi')
 				)
 				
-				select day1.date_time as date_time_day1, day1.value as value_day1, day1.cwms_ts_id as cwms_ts_id_day1, day1.location_id as location_id_day1, day1.unit_id as unit_id_day1, day1.data_entry_date as data_entry_date_day1, day1.data_entry_date_org as data_entry_date_org_day1
-					,day2.date_time as date_time_day2, day2.value as value_day2, day2.cwms_ts_id as cwms_ts_id_day2, day2.location_id as location_id_day2, day2.unit_id as unit_id_day2, day2.data_entry_date as data_entry_date_day2, day2.data_entry_date_org as data_entry_date_org_day2
-					,day3.date_time as date_time_day3, day3.value as value_day3, day3.cwms_ts_id as cwms_ts_id_day3, day3.location_id as location_id_day3, day3.unit_id as unit_id_day3, day3.data_entry_date as data_entry_date_day3, day3.data_entry_date_org as data_entry_date_org_day3
+				select day1.date_time as date_time_day1, day1.value as value_day1, day1.cwms_ts_id as cwms_ts_id_day1, day1.location_id as location_id_day1, day1.unit_id as unit_id_day1, day1.data_entry_date as data_entry_date_day1, day1.data_entry_date_org as data_entry_date_org_day1, day1.data_entry_date_cst as data_entry_date_cst1
+					,day2.date_time as date_time_day2, day2.value as value_day2, day2.cwms_ts_id as cwms_ts_id_day2, day2.location_id as location_id_day2, day2.unit_id as unit_id_day2, day2.data_entry_date as data_entry_date_day2, day2.data_entry_date_org as data_entry_date_org_day2, day2.data_entry_date_cst as data_entry_date_cst2
+					,day3.date_time as date_time_day3, day3.value as value_day3, day3.cwms_ts_id as cwms_ts_id_day3, day3.location_id as location_id_day3, day3.unit_id as unit_id_day3, day3.data_entry_date as data_entry_date_day3, day3.data_entry_date_org as data_entry_date_org_day3, day3.data_entry_date_cst as data_entry_date_cst3
 				from cte_day1 day1
 					left join day_2 day2
 					on day1.location_id = day2.location_id
@@ -376,6 +379,8 @@ function find_nws_forecast2($db, $cwms_ts_id, $nws_day1_date, $nws_day2_date, $n
 				"unit_id_day1" => $row['UNIT_ID_DAY1'],
 				"cwms_ts_id_day1" => $row['CWMS_TS_ID_DAY1'],
 				"location_id_day1" => $row['LOCATION_ID_DAY1'],
+				"data_entry_date_cst1" => $row['DATA_ENTRY_DATE_CST1'],
+
 				"date_time_day2" => $row['DATE_TIME_DAY2'],
 				"data_entry_date_day2" => $row['DATA_ENTRY_DATE_DAY2'],
 				"data_entry_date_org_day2" => $row['DATA_ENTRY_DATE_ORG_DAY2'],
@@ -383,13 +388,16 @@ function find_nws_forecast2($db, $cwms_ts_id, $nws_day1_date, $nws_day2_date, $n
 				"unit_id_day2" => $row['UNIT_ID_DAY2'],
 				"cwms_ts_id_day2" => $row['CWMS_TS_ID_DAY2'],
 				"location_id_day2" => $row['LOCATION_ID_DAY2'],
+				"data_entry_date_cst2" => $row['DATA_ENTRY_DATE_CST2'],
+
 				"date_time_day3" => $row['DATE_TIME_DAY3'],
 				"data_entry_date_day3" => $row['DATA_ENTRY_DATE_DAY3'],
 				"data_entry_date_org_day3" => $row['DATA_ENTRY_DATE_ORG_DAY3'],
 				"value_day3" => $row['VALUE_DAY3'],
 				"unit_id_day3" => $row['UNIT_ID_DAY3'],
 				"cwms_ts_id_day3" => $row['CWMS_TS_ID_DAY3'],
-				"location_id_day3" => $row['LOCATION_ID_DAY3']
+				"location_id_day3" => $row['LOCATION_ID_DAY3'],
+				"data_entry_date_cst3" => $row['DATA_ENTRY_DATE_CST3'],
 			];
 			
 		}
