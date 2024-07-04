@@ -26,6 +26,12 @@
             openURL(baseUrl, { userInput });
         }
 
+        function vSessionB3weba18() {
+            const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_v_session_b3weba18.php";
+            const userInput = document.getElementById("v_session_b3weba18").value;
+            openURL(baseUrl, { userInput });
+        }
+
         function allBasins() {
             const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_all_basins.php";
             const userInput = document.getElementById("all_basins").value;
@@ -334,6 +340,14 @@
         <label>disabled: </label>
         <input type="text" id="db_info" name="db_info" disabled>
         <button onclick="dbInfo()">Submit</button>
+    </div>
+
+    <h2>Get V Session B3weba18</h2>
+    <p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_v_session_b3weba18.php</p>
+    <div>
+        <label>disabled: </label>
+        <input type="text" id="v_session_b3weba18" name="v_session_b3weba18" disabled>
+        <button onclick="vSessionB3weba18()">Submit</button>
     </div>
     
     <h2>Get Meta Data</h2>

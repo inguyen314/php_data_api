@@ -350,3 +350,41 @@ function find_db_info($db) {
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
+function v_session($db,$session_username) {
+	$stmnt_query = null;
+	$data = [];
+	
+	try {
+		$sql = "select count(*) as session_count, status, process, program, machine, schemaname ";
+		$sql .= 'from v$session ';
+		$sql .= "where username='".$session_username."'";
+		$sql .= "group by status, process, program, machine, schemaname";
+		
+		$stmnt_query = oci_parse($db, $sql);
+		$status = oci_execute($stmnt_query);
+
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+			$obj = (object) [
+				"session_count" => $row['SESSION_COUNT'],
+				"status" => $row['STATUS'],
+				"process" => $row['PROCESS'],
+				"program" => $row['PROGRAM'],
+				"machine" => $row['MACHINE'],
+				"schemaname" => $row['SCHEMANAME']
+			];
+			array_push($data, $obj);
+		}
+	}
+	catch (Exception $e) {
+		$e = oci_error($db);  
+		trigger_error(htmlentities($e['message']), E_USER_ERROR);
+
+		return null;
+	}
+	finally {
+		oci_free_statement($stmnt_query); 
+	}
+	return $data;
+}
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
