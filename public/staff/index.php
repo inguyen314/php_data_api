@@ -20,6 +20,12 @@
             openURL(baseUrl, { userInput });
         }
 
+        function dbInfo() {
+            const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_db_info.php";
+            const userInput = document.getElementById("db_info").value;
+            openURL(baseUrl, { userInput });
+        }
+
         function allBasins() {
             const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_all_basins.php";
             const userInput = document.getElementById("all_basins").value;
@@ -322,6 +328,14 @@
     <h2>Get Gage Control</h2>
     <p><a href="https://wm.mvs.ds.usace.army.mil/php_data_api/public/json/gage_control.json" target="_blank">https://wm.mvs.ds.usace.army.mil/php_data_api/public/json/gage_control.json</a></p>
 
+    <h2>Get Database Info</h2>
+    <p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_db_info.php</p>
+    <div>
+        <label>disabled: </label>
+        <input type="text" id="db_info" name="db_info" disabled>
+        <button onclick="dbInfo()">Submit</button>
+    </div>
+    
     <h2>Get Meta Data</h2>
     <p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_gage_control.php</p>
     <div>

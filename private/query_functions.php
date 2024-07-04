@@ -321,3 +321,32 @@ function find_gage_control($db) {
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
+function find_db_info($db) {
+	$stmnt_query = null;
+	$data = null;
+	
+	try {
+		$sql = 'SELECT banner FROM v$version';
+		
+		$stmnt_query = oci_parse($db, $sql);
+		$status = oci_execute($stmnt_query);		
+		
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {		
+			$data = (object) 
+			[
+				"banner" => $row['BANNER']
+			];
+		}
+	}
+	catch (Exception $e) {
+		$e = oci_error($db);  
+		trigger_error(htmlentities($e['message']), E_USER_ERROR);
+		return null;
+	}
+	finally {
+		oci_free_statement($stmnt_query);
+	}
+	return $data;
+}
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
