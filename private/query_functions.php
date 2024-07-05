@@ -388,3 +388,33 @@ function v_session($db,$session_username) {
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
+function v_session_active($db) {
+	$stmnt_query = null;
+	$data = [];
+	
+	try {
+		$sql = "SELECT COUNT(*) as active_sessions ";
+		$sql .= 'from v$session ';
+		$sql .= "where status='ACTIVE'";
+		
+		$stmnt_query = oci_parse($db, $sql);
+		$status = oci_execute($stmnt_query);
+
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+			$obj = (object) [
+				"active_sessions" => $row['ACTIVE_SESSIONS']
+			];
+			array_push($data, $obj);
+		}
+	}
+	catch (Exception $e) {
+		$e = oci_error($db);  
+		trigger_error(htmlentities($e['message']), E_USER_ERROR);
+
+		return null;
+	}
+	finally {
+		oci_free_statement($stmnt_query); 
+	}
+	return $data;
+}
