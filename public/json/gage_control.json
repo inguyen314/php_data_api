@@ -4955,7 +4955,7 @@
                 "netmiss_data_location": null,
                 "tsid_interpolate_location": true,
                 "tsid_netmiss_observe": "Meredosia-Illinois.Stage.Inst.30Minutes.0.lrgsShef-rev",
-                "tsid_netmiss": "Meredosia-Illinois.Stage.Inst.~1Day.0.netmiss-fcst",
+                "tsid_netmiss": null,
                 "tsid_forecast_location": false,
                 "tsid_yesterday_inflow": null,
                 "tsid_storage": null,
