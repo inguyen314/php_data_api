@@ -448,3 +448,112 @@ function cp_comp_tasklist($db) {
 	}
 	return $data;
 }
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
+function find_loading_application($db) {
+	$stmnt_query = null;
+	$data = [];
+	
+	try {		
+		$sql = "SELECT
+					loading_application_name,
+					COUNT(loading_application_name)
+				FROM
+					ccp.cp_comp_tasklist t,
+					ccp.hdb_loading_application a
+				WHERE
+					a.loading_application_id = t.loading_application_id
+				GROUP BY
+					loading_application_name";
+		
+		$stmnt_query = oci_parse($db, $sql);
+		$status = oci_execute($stmnt_query);
+
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+			$obj = (object) [
+				"loading_application_name" => $row['LOADING_APPLICATION_NAME'],
+				"count_loading_application_name" => $row['COUNT_LOADING_APPLICATION_NAME']				
+			];
+			array_push($data, $obj);
+		}
+	}
+	catch (Exception $e) {
+		$e = oci_error($db);  
+		trigger_error(htmlentities($e['message']), E_USER_ERROR);
+		return null;
+	}
+	finally {
+		oci_free_statement($stmnt_query); 
+	}
+	return $data;
+}
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
+function find_comp_retry($db) {
+	$stmnt_query = null;
+	$data = [];
+
+	try {				
+		$sql = "select site_datatype_id, site, loading_app, number_comps 
+			from (SELECT DISTINCT tl.site_datatype_id,
+			(SELECT b.cwms_ts_id FROM cwms_20.av_cwms_ts_id b WHERE b.ts_code=tl.site_datatype_id) AS site,
+			(SELECT a.loading_application_name FROM ccp.hdb_loading_application a WHERE a.loading_application_id = tl.loading_application_id ) AS loading_app,
+			Count(tl.site_datatype_id) OVER (partition BY tl.site_datatype_id) AS number_comps
+			FROM cp_comp_tasklist tl where fail_time is not null 
+			ORDER BY number_comps desc)";
+
+		$stmnt_query = oci_parse($db, $sql);
+		$status = oci_execute($stmnt_query);
+
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+			$obj = (object) [
+				"site_datatype_id" => $row['SITE_DATATYPE_ID'],
+				"site" => $row['SITE'],
+				"loading_app" => $row['LOADING_APP'],
+				"number_comps" => $row['NUMBER_COMPS']
+			];
+			array_push($data, $obj);
+		}
+	}
+	catch (Exception $e)  {
+		$e = oci_error($db);  
+		trigger_error(htmlentities($e['message']), E_USER_ERROR);
+		return null;
+	}
+	finally {
+		oci_free_statement($stmnt_query); 
+	}
+	return $data;
+}
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
+function find_username_at_log_message($db) {
+	$stmnt_query = null;
+	$data = [];
+	
+	try {		
+		$sql = "select distinct session_username from CWMS_20.at_log_message";
+		
+		$stmnt_query = oci_parse($db, $sql);
+		$status = oci_execute($stmnt_query);
+
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+			$obj = (object) [
+				"session_username" => $row['SESSION_USERNAME']			
+			];
+			array_push($data, $obj);
+		}
+	}
+	catch (Exception $e) {
+		$e = oci_error($db);  
+		trigger_error(htmlentities($e['message']), E_USER_ERROR);
+
+		return null;
+	}
+	finally {
+		oci_free_statement($stmnt_query); 
+	}
+	return $data;
+}
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------

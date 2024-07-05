@@ -26,6 +26,24 @@
             openURL(baseUrl, { userInput });
         }
 
+        function loadingApplication() {
+            const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_loading_application.php";
+            const userInput = document.getElementById("loading_application").value;
+            openURL(baseUrl, { userInput });
+        }
+
+        function compRetry() {
+            const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_comp_retry.php";
+            const userInput = document.getElementById("comp_retry").value;
+            openURL(baseUrl, { userInput });
+        }
+
+        function locationIdUsernameAtLogMessage() {
+            const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_location_id_username_at_log_message.php";
+            const userInput = document.getElementById("location_id_username_at_log_message").value;
+            openURL(baseUrl, { userInput });
+        }
+
         function cpCompTasklist() {
             const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_cp_comp_tasklist.php";
             const userInput = document.getElementById("cp_comp_tasklist").value;
@@ -358,6 +376,30 @@
         <label>disabled: </label>
         <input type="text" id="db_info" name="db_info" disabled>
         <button onclick="dbInfo()">Submit</button>
+    </div>
+
+    <h2>Get Loading Application</h2>
+    <p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_loading_application.php</p>
+    <div>
+        <label>disabled: </label>
+        <input type="text" id="loading_application" name="loading_application" disabled>
+        <button onclick="loadingApplication()">Submit</button>
+    </div>
+
+    <h2>Get Comp Retry</h2>
+    <p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_comp_retry.php</p>
+    <div>
+        <label>disabled: </label>
+        <input type="text" id="comp_retry" name="comp_retry" disabled>
+        <button onclick="compRetry()">Submit</button>
+    </div>
+
+    <h2>Get Location Id Username At Log Message</h2>
+    <p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_location_id_username_at_log_message.php</p>
+    <div>
+        <label>disabled: </label>
+        <input type="text" id="location_id_username_at_log_message" name="location_id_username_at_log_message" disabled>
+        <button onclick="locationIdUsernameAtLogMessage()">Submit</button>
     </div>
 
     <h2>Get Cp Comp Tasklist</h2>
