@@ -557,3 +557,64 @@ function find_username_at_log_message($db) {
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
+function find_at_log_message($db,$session_username) {
+	$stmnt_query = null;
+	$data = [];
+	
+	try {		
+		$sql = "select msg_id
+					,office_code
+					,log_timestamp_utc
+					,msg_level
+					,component
+					,instance
+					,host
+					,port
+					,report_timestamp_utc
+					,session_username
+					,session_osuser
+					,session_process
+					,session_machine
+					,msg_type
+					,msg_text
+				from CWMS_20.at_log_message 
+				where session_username = '".$session_username."' 
+				and ROWNUM <= 500";
+		
+		$stmnt_query = oci_parse($db, $sql);
+		$status = oci_execute($stmnt_query);
+
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+			$obj = (object) [
+				"msg_id" => $row['MSG_ID'],
+				"office_code" => $row['OFFICE_CODE'],
+				"log_timestamp_utc" => $row['LOG_TIMESTAMP_UTC'],
+				"msg_level" => $row['MSG_LEVEL'],
+				"component" => $row['COMPONENT'],
+				"instance" => $row['INSTANCE'],
+				"host" => $row['HOST'],
+				"port" => $row['PORT'],
+				"report_timestamp_utc" => $row['REPORT_TIMESTAMP_UTC'],
+				"session_username" => $row['SESSION_USERNAME'],
+				"session_osuser" => $row['SESSION_OSUSER'],
+				"session_process" => $row['SESSION_PROCESS'],
+				"session_machine" => $row['SESSION_MACHINE'],
+				"msg_type" => $row['MSG_TYPE'],
+				"msg_text" => $row['MSG_TEXT']
+			];
+			array_push($data, $obj);
+		}
+	}
+	catch (Exception $e) {
+		$e = oci_error($db);  
+		trigger_error(htmlentities($e['message']), E_USER_ERROR);
+
+		return null;
+	}
+	finally {
+		oci_free_statement($stmnt_query); 
+	}
+	return $data;
+}
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------

@@ -44,6 +44,12 @@
             openURL(baseUrl, { userInput });
         }
 
+        function atLogMessage() {
+            const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_at_log_message.php";
+            const userInput = document.getElementById("at_log_message").value;
+            openURL(baseUrl, { session_username: userInput });
+        }
+
         function cpCompTasklist() {
             const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_cp_comp_tasklist.php";
             const userInput = document.getElementById("cp_comp_tasklist").value;
@@ -400,6 +406,14 @@
         <label>disabled: </label>
         <input type="text" id="location_id_username_at_log_message" name="location_id_username_at_log_message" disabled>
         <button onclick="locationIdUsernameAtLogMessage()">Submit</button>
+    </div>
+
+    <h2>Get At Log Message</h2>
+    <p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_at_log_message.php</p>
+    <div>
+        <label>disabled: </label>
+        <input type="text" id="at_log_message" value="B3WEBA18">
+        <button onclick="atLogMessage()">Submit</button>
     </div>
 
     <h2>Get Cp Comp Tasklist</h2>
