@@ -26,6 +26,12 @@
             openURL(baseUrl, { userInput });
         }
 
+        function cpCompTasklist() {
+            const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_cp_comp_tasklist.php";
+            const userInput = document.getElementById("cp_comp_tasklist").value;
+            openURL(baseUrl, { userInput });
+        }
+
         function activeSessions() {
             const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_active_sessions.php";
             const userInput = document.getElementById("active_sessions").value;
@@ -352,6 +358,14 @@
         <label>disabled: </label>
         <input type="text" id="db_info" name="db_info" disabled>
         <button onclick="dbInfo()">Submit</button>
+    </div>
+
+    <h2>Get Cp Comp Tasklist</h2>
+    <p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_cp_comp_tasklist.php</p>
+    <div>
+        <label>disabled: </label>
+        <input type="text" id="cp_comp_tasklist" name="cp_comp_tasklist" disabled>
+        <button onclick="cpCompTasklist()">Submit</button>
     </div>
 
     <h2>Get Active Sessions</h2>

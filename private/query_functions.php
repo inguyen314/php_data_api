@@ -418,3 +418,33 @@ function v_session_active($db) {
 	}
 	return $data;
 }
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
+function cp_comp_tasklist($db) {
+	$stmnt_query = null;
+	$data = [];
+	
+	try {
+		$sql = "select loading_application_id,count(loading_application_id) as count from CCP.CP_COMP_TASKLIST group by loading_application_id";
+		
+		$stmnt_query = oci_parse($db, $sql);
+		$status = oci_execute($stmnt_query);
+
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+			$obj = (object) [
+				"loading_application_id" => $row['LOADING_APPLICATION_ID'],
+				"count" => $row['COUNT']
+			];
+			array_push($data, $obj);
+		}
+	}
+	catch (Exception $e) {
+		$e = oci_error($db);  
+		trigger_error(htmlentities($e['message']), E_USER_ERROR);
+		return null;
+	}
+	finally {
+		oci_free_statement($stmnt_query); 
+	}
+	return $data;
+}
