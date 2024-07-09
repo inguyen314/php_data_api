@@ -226,15 +226,21 @@
             openURL(baseUrl, { basin, specified_level_id_level });
         }
 
-        function gageControlBasin() {
+        function gageControlByBasin() {
             const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_gage_control_by_basin.php";
             const userInput = document.getElementById("gage_control_basin").value;
             openURL(baseUrl, { basin: userInput });
         }
 
-        function gageControlLocation() {
+        function gageControlByLocation() {
             const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_gage_control_by_location_id.php";
             const userInput = document.getElementById("gage_control_location_id").value;
+            openURL(baseUrl, { location_id: userInput });
+        }
+
+        function gageMetadataByLocation() {
+            const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_metadata_by_location_id.php";
+            const userInput = document.getElementById("location_id").value;
             openURL(baseUrl, { location_id: userInput });
         }
 
@@ -455,7 +461,7 @@
         <button onclick="vSessionB3cwpa18()">Submit</button>
     </div>
     
-    <h2>Get Meta Data</h2>
+    <h2>Get Gage Control</h2>
     <p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_gage_control.php</p>
     <div>
         <label>disabled: </label>
@@ -721,20 +727,28 @@
         <button onclick="specifiedLevelIdLevelByBasin()">Submit</button>
     </div>
 
-    <h2>Get Meta Data</h2>
+    <h2>Get Gage Control Metadata By Basin</h2>
     <p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_gage_control_by_basin.php</p>
     <div>
         <label for="basin">basin: </label>
         <input type="text" id="gage_control_basin" name="basin" value="Mississippi">
-        <button onclick="gageControlBasin()">Submit</button>
+        <button onclick="gageControlByBasin()">Submit</button>
     </div>
 
-    <h2>Get Meta Data</h2>
+    <h2>Get Gage Control Metadata By Location</h2>
     <p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_gage_control_by_location_id.php</p>
     <div>
         <label for="location_id">location: </label>
         <input type="text" id="gage_control_location_id" name="location_id" value="St Louis-Mississippi">
-        <button onclick="gageControlLocation()">Submit</button>
+        <button onclick="gageControlByLocation()">Submit</button>
+    </div>
+
+    <h2>Get Metadata By Location</h2>
+    <p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_metadata_by_location_id.php</p>
+    <div>
+        <label for="location_id">location: </label>
+        <input type="text" id="location_id" name="location_id" value="St Louis-Mississippi">
+        <button onclick="gageMetadataByLocation()">Submit</button>
     </div>
 
     <h2>Get Level</h2>

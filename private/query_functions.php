@@ -618,3 +618,114 @@ function find_at_log_message($db,$session_username) {
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
+function find_metadata_by_location_id($db, $location_id) {
+	$stmnt_query = null;
+	$data = [];
+	
+	try {		
+		$sql = "select  loc.location_code, 
+					loc.base_location_code, 
+					loc.sub_location_id, 
+					loc.location_id, 
+					loc.location_type, 
+					loc.unit_system, 
+					loc.elevation,
+					loc.unit_id,
+					loc.vertical_datum,
+					loc.longitude,
+					loc.latitude,
+					loc.time_zone_name,
+					loc.county_name,
+					loc.state_initial,
+					loc.public_name,
+					loc.long_name,
+					loc.description,
+					loc.base_loc_active_flag,
+					loc.loc_active_flag,
+					loc.location_kind_id,
+					loc.map_label,
+					loc.published_latitude,
+					loc.published_longitude,
+					loc.bounding_office_id,
+					loc.nation_id,
+					loc.nearest_city,
+					loc.active_flag,
+					stream.station, 
+					stream.stream_location_code, 
+					stream.stream_location_id, 
+					stream.bank, 
+					stream.station_unit, 
+					stream.area_unit, 
+					stream.lowest_measurable_stage, 
+					stream.navigation_station, 
+					stream.drainage_area,
+					stream.ungaged_area 
+			from cwms_v_loc loc 
+			join cwms_v_stream_location stream on 
+			loc.location_id=stream.location_id
+			where loc.location_id = '" . $location_id . "'
+				and loc.unit_system = 'EN'
+				and loc.sub_location_id is NOT null 
+				and stream.unit_system = 'EN'";
+		
+		$stmnt_query = oci_parse($db, $sql);
+		$status = oci_execute($stmnt_query);
+
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+			
+			$obj = (object) [
+				"location_code" => $row['LOCATION_CODE'],
+				"base_location_code" => $row['BASE_LOCATION_CODE'],
+				"sub_location_id" => $row['SUB_LOCATION_ID'],
+				"location_id" => $row['LOCATION_ID'],
+				"location_type" => $row['LOCATION_TYPE'],
+				"unit_system" => $row['UNIT_SYSTEM'],
+				"elevation" => $row['ELEVATION'],
+				"unit_id" => $row['UNIT_ID'],
+				"vertical_datum" => $row['VERTICAL_DATUM'],
+				"longitude" => $row['LONGITUDE'],
+				"latitude" => $row['LATITUDE'],
+				"time_zone_name" => $row['TIME_ZONE_NAME'],
+				"county_name" => $row['COUNTY_NAME'],
+				"state_initial" => $row['STATE_INITIAL'],
+				"public_name" => $row['PUBLIC_NAME'],
+				"long_name" => $row['LONG_NAME'],
+				"description" => $row['DESCRIPTION'],
+				"base_loc_active_flag" => $row['BASE_LOC_ACTIVE_FLAG'],
+				"loc_active_flag" => $row['LOC_ACTIVE_FLAG'],
+				"location_kind_id" => $row['LOCATION_KIND_ID'],
+				"map_label" => $row['MAP_LABEL'],
+				"published_latitude" => $row['PUBLISHED_LATITUDE'],
+				"published_longitude" => $row['PUBLISHED_LONGITUDE'],
+				"bounding_office_id" => $row['BOUNDING_OFFICE_ID'],
+				"nation_id" => $row['NATION_ID'],
+				"nearest_city" => $row['NEAREST_CITY'],
+				"active_flag" => $row['ACTIVE_FLAG'],
+				"station" => $row['STATION'],
+				"stream_location_code" => $row['STREAM_LOCATION_CODE'],
+				"stream_location_id" => $row['STREAM_LOCATION_ID'],
+				"bank" => $row['BANK'],
+				"station_unit" => $row['STATION_UNIT'],
+				"lowest_measurable_stage" => $row['LOWEST_MEASURABLE_STAGE'],
+				"navigation_station" => $row['NAVIGATION_STATION'],
+				"drainage_area" => $row['DRAINAGE_AREA'],
+				"ungaged_area" => $row['UNGAGED_AREA']
+				
+			];
+			array_push($data, $obj);
+		}
+	}
+	catch (Exception $e) {
+		$e = oci_error($db);  
+		trigger_error(htmlentities($e['message']), E_USER_ERROR);
+
+		return null;
+	}
+	finally {
+		oci_free_statement($stmnt_query); 
+	}
+	
+	return $data;
+}
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
