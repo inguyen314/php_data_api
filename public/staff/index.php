@@ -226,6 +226,12 @@
             openURL(baseUrl, { basin, specified_level_id_level });
         }
 
+        function datumConversionByBasin() {
+            const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_datum_conversion_by_basin.php";
+            const basin = document.getElementById("basin").value;
+            openURL(baseUrl, { basin });
+        }
+
         function gageControlByBasin() {
             const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_gage_control_by_basin.php";
             const userInput = document.getElementById("gage_control_basin").value;
@@ -725,6 +731,14 @@
         <label>specified_level_id_level: </label>
         <input type="text" id="specified_level_id_level" value="Flood">
         <button onclick="specifiedLevelIdLevelByBasin()">Submit</button>
+    </div>
+
+    <h2>Get Datum Conversion By Basin</h2>
+    <p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_datum_conversion_by_basin.php</p>
+    <div>
+        <label>basin: </label>
+        <input type="text" id="basin" value="Mississippi">
+        <button onclick="datumConversionByBasin()">Submit</button>
     </div>
 
     <h2>Get Gage Control Metadata By Basin</h2>
