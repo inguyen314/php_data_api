@@ -298,6 +298,13 @@
             openURL(baseUrl, { cwms_ts_id, year });
         }
 
+        function datmanDataEditingStatusByBasin() {
+            const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_datman_data_editing_status_by_basin.php";
+            const basin = document.getElementById("basin").value;
+            const type = document.getElementById("type").value;
+            openURL(baseUrl, { basin, type });
+        }
+
         function yearlyMaxRdl() {
             const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_yearly_max_rdl.php";
             const cwms_ts_id = document.getElementById("cwms_ts_id").value;
@@ -701,6 +708,17 @@
         <label for="year">start day: </label>
         <input type="text" id="year" value="2020">
         <button onclick="yearlyMax()">Submit</button>
+    </div>
+
+    <h2>Get Datman Data Editing Status By Basin</h2>
+    <p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_datman_data_editing_status_by_basin.php</p>
+    <div>
+        <label>basin: </label>
+        <input type="text" id="basin" value="Mississippi">
+        <br>
+        <label>type: </label>
+        <input type="text" id="type" value="">
+        <button onclick="datmanDataEditingStatusByBasin()">Submit</button>
     </div>
 
     <h2>Get Specified Level Id</h2>

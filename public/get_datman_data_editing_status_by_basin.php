@@ -10,10 +10,8 @@
 
     date_default_timezone_set('America/Chicago');
     if (date_default_timezone_get()) {
-        //echo 'date_default_timezone_set: ' . date_default_timezone_get() . '<br />';
     }
     if (ini_get('date.timezone')) {
-        //echo 'date.timezone: ' . ini_get('date.timezone');
     }
 
     // Set the content type to application/json
@@ -21,12 +19,10 @@
 
     // Get all the variables from the query parameters
     $basin = $_GET['basin'];
+    $type = $_GET['type'];
 
-    $gage_control = find_gage_control_basin($db, $basin);
-    echo json_encode($gage_control);
-    
+    $data = find_datman_data_editing_status_by_basin($db, $basin, $type);
+    echo json_encode($data);
+
     db_disconnect($db);
 ?>
-	
-
-                            

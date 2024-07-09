@@ -936,3 +936,141 @@ function find_datum_conversion_by_basin($db, $basin) {
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
+function find_datman_data_editing_status_by_basin($db, $basin, $type) {
+	$stmnt_query = null;
+	$data = [];
+
+	if ($type == "spike_stage_rev") {
+		$q = "and upper(cwms_util.split_text(ts_id, 6, '.')) like upper(cwms_util.normalize_wildcards('lrgsShef-rev'))
+		and (upper(cwms_util.split_text(ts_id, 2, '.')) like upper(cwms_util.normalize_wildcards('Stage')))
+		and extents.location_id NOT IN ('Brickeys Ldg-Mississippi','Sterling Ldg-Mississippi','Paris-Mid Fork Salt','Pittsburg-Kaskaskia')";
+	} else if ($type == "spike_stage_29") {
+		$q = "and upper(cwms_util.split_text(ts_id, 6, '.')) like upper(cwms_util.normalize_wildcards('29'))
+		and (upper(cwms_util.split_text(ts_id, 2, '.')) like upper(cwms_util.normalize_wildcards('Stage')))
+		and extents.location_id NOT IN ('Brickeys Ldg-Mississippi','Sterling Ldg-Mississippi','Paris-Mid Fork Salt','Pittsburg-Kaskaskia')";
+	} else if ($type == "spike_elev_rev") {
+		$q = "and upper(cwms_util.split_text(ts_id, 6, '.')) like upper(cwms_util.normalize_wildcards('lrgsShef-rev'))
+		and (upper(cwms_util.split_text(ts_id, 2, '.')) like upper(cwms_util.normalize_wildcards('Elev')))
+		and extents.location_id NOT IN ('Brickeys Ldg-Mississippi','Sterling Ldg-Mississippi','Paris-Mid Fork Salt','Pittsburg-Kaskaskia')";
+	} else if ($type == "spike_datman_stage") {
+		$q = "and upper(cwms_util.split_text(ts_id, 6, '.')) like upper(cwms_util.normalize_wildcards('datman-rev'))
+		and (upper(cwms_util.split_text(ts_id, 2, '.')) like upper(cwms_util.normalize_wildcards('Stage')))
+		and extents.location_id NOT IN ('Brickeys Ldg-Mississippi','Sterling Ldg-Mississippi','Paris-Mid Fork Salt','Pittsburg-Kaskaskia')";
+	} else if ($type == "spike_datman_elev") {
+		$q = "and upper(cwms_util.split_text(ts_id, 6, '.')) like upper(cwms_util.normalize_wildcards('datman-rev'))
+		and (upper(cwms_util.split_text(ts_id, 2, '.')) like upper(cwms_util.normalize_wildcards('Elev')))
+		and extents.location_id NOT IN ('Brickeys Ldg-Mississippi','Sterling Ldg-Mississippi','Paris-Mid Fork Salt','Pittsburg-Kaskaskia')";
+	} else {
+		$q = "and upper(cwms_util.split_text(ts_id, 6, '.')) like upper(cwms_util.normalize_wildcards('datman-rev'))
+		and (upper(cwms_util.split_text(ts_id, 2, '.')) like upper(cwms_util.normalize_wildcards('Stage')) or upper(cwms_util.split_text(ts_id, 2, '.')) like upper(cwms_util.normalize_wildcards('Elev')))
+		and extents.location_id NOT IN ('Brickeys Ldg-Mississippi','Sterling Ldg-Mississippi','Paris-Mid Fork Salt','Pittsburg-Kaskaskia')";
+	}
+		
+	try {				
+		$sql = "select 
+				basins.group_id as basin, 
+				basins.sub_location_id as sub_basin,
+				basins.attribute as location_sort_order,
+				cga.category_id, cga.group_id,
+				extents.ts_code, 
+				extents.location_id, 
+				extents.parameter_id, 
+				extents.ts_id as cwms_ts_id, 
+				extents.time_zone_name, 
+				extents.earliest_time as min_date,
+				EXTRACT(YEAR FROM extents.earliest_time) AS selected_year1, 
+				extents.latest_time as max_date,
+				EXTRACT(YEAR FROM extents.latest_time) AS selected_year2,
+				round(months_between(sysdate,latest_time),0) as months_of_last_recorded_data,
+				round(months_between(sysdate,latest_time)*30,0) as days_of_last_recorded_data,
+				round(months_between(latest_time,earliest_time)/12,0) as year_of_data,
+
+				cwms_util.split_text(ts_id, 3, '.') as parameter_type_id,
+				cwms_util.split_text(ts_id, 4, '.') as interval_id,
+				cwms_util.split_text(ts_id, 5, '.') as duration_id,
+				cwms_util.split_text(ts_id, 6, '.') as version_id,
+
+				to_char(earliest_time, 'DD') as min_date_day,
+				to_char(earliest_time, 'MON') as min_date_mon,
+				to_char(earliest_time, 'YYYY') as min_date_year,
+				to_char(earliest_time, 'HH24:MI:SS') as min_date_time,
+
+				to_char(latest_time, 'DD') as max_date_day,
+				to_char(latest_time, 'MON') as max_date_mon,
+				to_char(latest_time, 'YYYY') as max_date_year,
+				to_char(latest_time, 'HH24:MI:SS') as max_date_time,
+
+				sysdate,
+				sysdate - interval '8' hour as sysdate_new
+
+			from CWMS_20.AV_TS_EXTENTS_LOCAL extents
+			inner join CWMS_V_LOC_GRP_ASSGN cga on
+				cga.location_id=extents.location_id
+					inner join cwms_20.AV_LOC_GRP_ASSGN basins on 
+						extents.location_id=basins.location_id
+			where 
+				cga.category_id = 'RDL_DATMAN'
+				and cga.group_id in ('STAGE','ELEV')
+				and basins.category_id='RDL_Basins'
+				and basins.group_id='" . $basin . "'
+				".$q."
+			order by 
+				basins.group_id,
+				location_sort_order";
+		
+		$stmnt_query = oci_parse($db, $sql);
+		$status = oci_execute($stmnt_query);
+
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+			$obj = (object) [
+				"basin" => $row['BASIN'],
+				"sub_basin" => $row['SUB_BASIN'],
+				"location_sort_order" => $row['LOCATION_SORT_ORDER'],
+				"category_id" => $row['CATEGORY_ID'],
+				"group_id" => $row['GROUP_ID'],
+				"ts_code" => $row['TS_CODE'],
+				"location_id" => $row['LOCATION_ID'],
+				"parameter_id" => $row['PARAMETER_ID'],
+				"cwms_ts_id" => $row['CWMS_TS_ID'],
+				"time_zone_name" => $row['TIME_ZONE_NAME'],
+				
+				"min_date" => $row['MIN_DATE'],
+				"selected_year1" => $row['SELECTED_YEAR1'],
+				"max_date" => $row['MAX_DATE'],
+				"selected_year2" => $row['SELECTED_YEAR2'],
+				
+				"months_of_last_recorded_data" => $row['MONTHS_OF_LAST_RECORDED_DATA'],
+				"days_of_last_recorded_data" => $row['DAYS_OF_LAST_RECORDED_DATA'],
+				"year_of_data" => $row['YEAR_OF_DATA'],
+				
+				"parameter_type_id" => $row['PARAMETER_TYPE_ID'],
+				"interval_id" => $row['INTERVAL_ID'],
+				"duration_id" => $row['DURATION_ID'],
+				"version_id" => $row['VERSION_ID'],
+				
+				"min_date_day" => $row['MIN_DATE_DAY'],
+				"min_date_mon" => $row['MIN_DATE_MON'],
+				"min_date_year" => $row['MIN_DATE_YEAR'],
+				"min_date_time" => $row['MIN_DATE_TIME'],
+				
+				"max_date_day" => $row['MAX_DATE_DAY'],
+				"max_date_mon" => $row['MAX_DATE_MON'],
+				"max_date_year" => $row['MAX_DATE_YEAR'],
+				"max_date_time" => $row['MAX_DATE_TIME'],
+				
+				"sysdate" => $row['SYSDATE'],
+				"sysdate_new" => $row['SYSDATE_NEW']	
+			];
+			array_push($data, $obj);
+		}
+	}
+	catch (Exception $e) {
+		$e = oci_error($db);  
+		trigger_error(htmlentities($e['message']), E_USER_ERROR);
+		return null;
+	}
+	finally {
+		oci_free_statement($stmnt_query); 
+	}	
+	return $data;
+}
