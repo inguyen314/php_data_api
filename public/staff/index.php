@@ -219,6 +219,13 @@
             openURL(baseUrl, { location_id, specified_level_id_level });
         }
 
+        function specifiedLevelIdLevelByBasin() {
+            const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_specified_level_id_level_by_basin.php";
+            const basin = document.getElementById("basin").value;
+            const specified_level_id_level = document.getElementById("specified_level_id_level").value;
+            openURL(baseUrl, { basin, specified_level_id_level });
+        }
+
         function gageControlBasin() {
             const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_gage_control_by_basin.php";
             const userInput = document.getElementById("gage_control_basin").value;
@@ -701,6 +708,17 @@
         <label>specified_level_id_level: </label>
         <input type="text" id="specified_level_id_level" value="Flood">
         <button onclick="specifiedLevelIdLevel()">Submit</button>
+    </div>
+
+    <h2>Get Specified Level Id Level By Basin</h2>
+    <p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_specified_level_id_level_by_basin.php</p>
+    <div>
+        <label>basin: </label>
+        <input type="text" id="basin" value="Mississippi">
+        <br>
+        <label>specified_level_id_level: </label>
+        <input type="text" id="specified_level_id_level" value="Flood">
+        <button onclick="specifiedLevelIdLevelByBasin()">Submit</button>
     </div>
 
     <h2>Get Meta Data</h2>
