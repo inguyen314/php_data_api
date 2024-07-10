@@ -103,46 +103,5 @@
                 "end_day": 0
             }
         ]
-    },
-    {
-        "basin": "Kaskaskia",
-        "gages": [
-            {
-                "ld_gate_summay": true,
-                "report_precip": true,
-                "location_id": "Chesterville-Kaskaskia",
-                "tsid_stage_rev": "Chesterville-Kaskaskia.Stage.Inst.15Minutes.0.lrgsShef-rev",
-                "tsid_datman": "Chesterville-Kaskaskia.Stage.Inst.~1Day.0.datman-rev",
-                "tsid_datman_parameter": "Stage",
-                "c_count": 96,
-                "unit_id": "ft",
-                "start_day": 4,
-                "end_day": 0
-            },
-            {
-                "ld_gate_summay": true,
-                "report_precip": true,
-                "location_id": "Cooks Mill-Kaskaskia",
-                "tsid_stage_rev": "Cooks Mill-Kaskaskia.Stage.Inst.15Minutes.0.lrgsShef-rev",
-                "tsid_datman": "Cooks Mill-Kaskaskia.Stage.Inst.~1Day.0.datman-rev",
-                "tsid_datman_parameter": "Stage",
-                "c_count": 96,
-                "unit_id": "ft",
-                "start_day": 4,
-                "end_day": 0
-            },
-            {
-                "ld_gate_summay": true,
-                "report_precip": true,
-                "location_id": "Allenville-Whitley Cr",
-                "tsid_stage_rev": "Allenville-Whitley Cr.Stage.Inst.15Minutes.0.lrgsShef-rev",
-                "tsid_datman": "Allenville-Whitley Cr.Stage.Inst.~1Day.0.datman-rev",
-                "tsid_datman_parameter": "Stage",
-                "c_count": 96,
-                "unit_id": "ft",
-                "start_day": 4,
-                "end_day": 0
-            }
-        ]
     }
 ]
