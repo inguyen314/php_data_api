@@ -32,6 +32,7 @@ require_once('query_functions_ld_gate_summary.php');
 require_once('query_functions_precip.php');
 require_once('query_functions_location_id.php');
 require_once('query_functions_rating.php');
+require_once('query_functions_lake.php');
 require_once('query_functions_netmiss_forecast.php');
 require_once('query_functions_river_reservoir.php');
 require_once('validation_functions.php');
