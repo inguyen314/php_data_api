@@ -1074,3 +1074,113 @@ function find_datman_data_editing_status_by_basin($db, $basin, $type) {
 	}	
 	return $data;
 }
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
+function find_stage_and_stage_24($db, $cwms_ts_id, $hour_cst, $interval, $interval2) {
+	$stmnt_query = null;
+	$data = null;
+	
+	try {		
+		$sql = "with cte_stage as (
+			select cwms_ts_id
+				, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') as date_time
+				, cwms_util.split_text('".$cwms_ts_id."', 1, '.') as location_id
+				, cwms_util.split_text('".$cwms_ts_id."', 2, '.') as parameter_id
+				, value
+				, unit_id
+				, quality_code
+			from cwms_v_tsv_dqu_30d tsv
+			where 
+				tsv.cwms_ts_id = '".$cwms_ts_id."'  
+				and date_time =  to_date( to_char(sysdate, 'mm-dd-yyyy') || '".$hour_cst."'||':00:00' ,'mm-dd-yyyy hh24:mi:ss') - interval '".$interval."' day
+				and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 
+					case 
+						when cwms_util.split_text(tsv.cwms_ts_id, 2, '.') in ('Stage', 'Elev') then 'ft' 
+						when cwms_util.split_text(tsv.cwms_ts_id, 2, '.') in ('Precip', 'Depth') then 'in' 
+						when cwms_util.split_text(tsv.cwms_ts_id, 2, '.') in ('Conc-DO') then 'ppm'
+					end or tsv.unit_id in ('cfs', 'umho/cm', 'volt'))
+				and tsv.office_id = 'MVS' 
+				and tsv.aliased_item is null
+				-- Exclude rows where the minutes part of date_time is not 0 (i.e., 30-minute intervals)
+				and to_number(to_char(tsv.date_time, 'MI')) = 0
+			),
+			cte_stage_24 as (
+			select cwms_ts_id
+				, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') as date_time
+				, cwms_util.split_text('".$cwms_ts_id."', 1, '.') as location_id
+				, cwms_util.split_text('".$cwms_ts_id."', 2, '.') as parameter_id
+				, value
+				, unit_id
+				, quality_code
+			from cwms_v_tsv_dqu_30d tsv
+			where 
+				tsv.cwms_ts_id = '".$cwms_ts_id."'  
+				and date_time =  to_date( to_char(sysdate, 'mm-dd-yyyy') || '".$hour_cst."'||':00:00' ,'mm-dd-yyyy hh24:mi:ss') - interval '".$interval2."' day
+				and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 
+					case 
+						when cwms_util.split_text(tsv.cwms_ts_id, 2, '.') in ('Stage', 'Elev') then 'ft' 
+						when cwms_util.split_text(tsv.cwms_ts_id, 2, '.') in ('Precip', 'Depth') then 'in' 
+						when cwms_util.split_text(tsv.cwms_ts_id, 2, '.') in ('Conc-DO') then 'ppm'
+					end or tsv.unit_id in ('cfs', 'umho/cm', 'volt'))
+				and tsv.office_id = 'MVS' 
+				and tsv.aliased_item is null
+				-- Exclude rows where the minutes part of date_time is not 0 (i.e., 30-minute intervals)
+				and to_number(to_char(tsv.date_time, 'MI')) = 0
+			)
+			select 
+				cte_stage.cwms_ts_id as stage_cwms_ts_id
+				,cte_stage.date_time as stage_date_time
+				,cte_stage.location_id as stage_location_id
+				, cte_stage.parameter_id as stage_parameter_id
+				, cte_stage.value as stage_value
+				, cte_stage.unit_id as stage_unit_id
+				, cte_stage.quality_code as stage_quality_code
+				
+				,cte_stage_24.cwms_ts_id as stage_24_cwms_ts_id
+				,cte_stage_24.date_time as stage_24_date_time
+				,cte_stage_24.location_id as stage_24_location_id
+				, cte_stage_24.parameter_id as stage_24_parameter_id
+				, cte_stage_24.value as stage_24_value
+				, cte_stage_24.unit_id as stage_24_unit_id
+				, cte_stage_24.quality_code as stage_24_quality_code
+			from cte_stage cte_stage
+				left join cte_stage_24 cte_stage_24 ON
+				cte_stage.location_id=cte_stage_24.location_id";
+		
+		$stmnt_query = oci_parse($db, $sql);
+		$status = oci_execute($stmnt_query);
+
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+			
+			$data = (object) [
+				"stage_cwms_ts_id" => $row['STAGE_CWMS_TS_ID'],
+				"stage_date_time" => $row['STAGE_DATE_TIME'],
+				"stage_location_id" => $row['STAGE_LOCATION_ID'],
+				"stage_parameter_id" => $row['STAGE_PARAMETER_ID'],
+				"stage_value" => $row['STAGE_VALUE'],
+				"stage_unit_id" => $row['STAGE_UNIT_ID'],
+				"stage_quality_code" => $row['STAGE_QUALITY_CODE'],
+
+				"stage_24_cwms_ts_id" => $row['STAGE_24_CWMS_TS_ID'],
+				"stage_24_date_time" => $row['STAGE_24_DATE_TIME'],
+				"stage_24_location_id" => $row['STAGE_24_LOCATION_ID'],
+				"stage_24_parameter_id" => $row['STAGE_24_PARAMETER_ID'],
+				"stage_24_value" => $row['STAGE_24_VALUE'],
+				"stage_24_unit_id" => $row['STAGE_24_UNIT_ID'],
+				"stage_24_quality_code" => $row['STAGE_24_QUALITY_CODE']		
+			];
+		}
+	}
+	catch (Exception $e) {
+		$e = oci_error($db);  
+		trigger_error(htmlentities($e['message']), E_USER_ERROR);
+
+		return null;
+	}
+	finally {
+		oci_free_statement($stmnt_query); 
+	}
+	return $data;
+}
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------

@@ -530,6 +530,15 @@
                 const userInput = document.getElementById("roller_tainter_ldmp").value;
                 openURL(baseUrl, { userInput });
             }
+
+            function morningReport() {
+                const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_morning_report.php";
+                const tsId = document.getElementById("tsId").value;
+                const hour_cst = document.getElementById("hour_cst").value;
+                const interval = document.getElementById("interval").value;
+                const interval2 = document.getElementById("interval2").value;
+                openURL(baseUrl, { tsId: tsId, hour_cst: hour_cst, interval: interval, interval2: interval2 });
+            }
         </script>
         <style>
             input[type="text"] {
@@ -1268,6 +1277,27 @@
                 <button onclick="rollerTainterLdMelPrice()">Submit</button>
             </div>
         </div>
+
+        <h1><u>MORNING QUERIES</u></h1> 
+        <div>
+            <h2>Morning Report</h2>
+            <p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_morning_report.php</p>
+            <div>
+                <label for="tsId">tsId: </label>
+                <input type="text" id="tsId" name="tsId" value="St Louis-Mississippi.Stage.Inst.30Minutes.0.lrgsShef-rev">
+                <br>
+                <label for="hour_cst">hour_cst: </label>
+                <input type="text" id="hour_cst" name="hour_cst" value="06">
+                <br>
+                <label for="interval">interval: </label>
+                <input type="text" id="interval" name="interval" value="2">
+                <br>
+                <label for="interval2">interval2: </label>
+                <input type="text" id="interval2" name="interval2" value="2">
+                <button onclick="morningReport()">Submit</button>
+            </div>
+        </div>
+        
 
 
 
