@@ -30,6 +30,7 @@ require_once('query_functions.php');
 require_once('query_functions_gage_data.php');
 require_once('query_functions_ld_gate_summary.php');
 require_once('query_functions_precip.php');
+require_once('query_functions_top10.php');
 require_once('query_functions_location_id.php');
 require_once('query_functions_rating.php');
 require_once('query_functions_lake.php');

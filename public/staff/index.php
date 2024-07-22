@@ -539,6 +539,24 @@
                 const interval2 = document.getElementById("interval2").value;
                 openURL(baseUrl, { tsId: tsId, hour_cst: hour_cst, interval: interval, interval2: interval2 });
             }
+
+            function extentsByLocationId() {
+                const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_extents_by_location_id.php";
+                const userInput = document.getElementById("extents_by_location_id").value;
+                openURL(baseUrl, { location_id: userInput });
+            }
+
+            function stage29FromLocationId() {
+                const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_stage_29_by_location_id.php";
+                const userInput = document.getElementById("stage_29_by_location_id").value;
+                openURL(baseUrl, { location_id: userInput });
+            }
+
+            function stageRevFromLocationId() {
+                const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_stage_rev_by_location_id.php";
+                const userInput = document.getElementById("stage_rev_by_location_id").value;
+                openURL(baseUrl, { location_id: userInput });
+            }
         </script>
         <style>
             input[type="text"] {
@@ -1297,28 +1315,46 @@
                 <button onclick="morningReport()">Submit</button>
             </div>
         </div>
-        
+
+        <h1><u>TOP10 QUERIES</u></h1> 
+        <div>
+            <h2>Get Extents By Location Id</h2>
+            <p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_extents_by_location_id.php</p>
+            <div>
+                <label>location_id: </label>
+                <input type="text" id="extents_by_location_id" value="Chester-Mississippi">
+                <button onclick="extentsByLocationId()">Submit</button>
+            </div>
+
+            <h2>Get Stage 29 By Location Id</h2>
+            <p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_stage_29_by_location_id.php</p>
+            <div>
+                <label>location_id: </label>
+                <input type="text" id="stage_29_by_location_id" value="LD 22 TW-Mississippi">
+                <button onclick="stage29FromLocationId()">Submit</button>
+            </div>
+
+            <h2>Get Stage Rev By Location Id</h2>
+            <p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_stage_rev_by_location_id.php</p>
+            <div>
+                <label>location_id: </label>
+                <input type="text" id="stage_rev_by_location_id" value="Chester-Mississippi">
+                <button onclick="stageRevFromLocationId()">Submit</button>
+            </div>
+
+            <!-- <h2>Get Yearly Min RDL By Tsid</h2>
+            <p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_yearly_min_rdl_by_tsid.php</p>
+            <div>
+                <label>location_id: </label>
+                <input type="text" id="yearly_min_rdl_by_tsid" value="St Louis-Mississippi.Stage.Inst.30Minutes.0.lrgsShef-rev">
+                <br>
+                <label>location_id: </label>
+                <input type="text" id="yearly_min_rdl_by_tsid_year" value="2020">
+                <button onclick="yearlyMinRDLByTsid()">Submit</button>
+            </div> -->
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        </div>
     </div>
 </div>
 
