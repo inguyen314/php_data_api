@@ -3,6 +3,7 @@ require_once('../../private/initialize.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -67,14 +68,18 @@ require_once('../../private/initialize.php');
 									<!-- gage control -->
 									<div id="Tab1" class="tabcontent">
 										<div>
-											<h3>Get Gage Control Json<hr></h3>
+											<h3>Get Gage Control Json
+												<hr>
+											</h3>
 											<p><a href="https://wm.mvs.ds.usace.army.mil/php_data_api/public/json/gage_control.json" target="_blank">https://wm.mvs.ds.usace.army.mil/php_data_api/public/json/gage_control.json</a></p>
 										</div>
 									</div>
 
 									<!-- database -->
 									<div id="Tab2" class="tabcontent">
-										<h1>ALARM<hr></h1>
+										<h1>ALARM
+											<hr>
+										</h1>
 										<div>
 											<h2>Get Database Info</h2>
 											<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_db_info.php</p>
@@ -152,7 +157,9 @@ require_once('../../private/initialize.php');
 
 									<!-- location -->
 									<div id="Tab3" class="tabcontent">
-										<h1>LOCATION<hr></h1>
+										<h1>LOCATION
+											<hr>
+										</h1>
 										<div>
 											<h2>Get Gage Control</h2>
 											<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_gage_control.php</p>
@@ -294,7 +301,7 @@ require_once('../../private/initialize.php');
 
 									<!-- lake -->
 									<div id="Tab4" class="tabcontent">
-										<h1><u>LAKE</u></h1> 
+										<h1><u>LAKE</u></h1>
 										<div>
 											<h2>Get Carlyle Forecast</h2>
 											<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_lake/get_carlyle_forecast.php</p>
@@ -484,7 +491,9 @@ require_once('../../private/initialize.php');
 
 									<!-- data -->
 									<div id="Tab5" class="tabcontent">
-										<h1>DATA<hr></h1>
+										<h1>DATA
+											<hr>
+										</h1>
 										<div>
 											<h2>Get Rating COE Table</h2>
 											<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_rating_coe_table.php</p>
@@ -819,7 +828,7 @@ require_once('../../private/initialize.php');
 
 									<!-- morning -->
 									<div id="Tab6" class="tabcontent">
-										<h1><u>MORNING</u></h1> 
+										<h1><u>MORNING</u></h1>
 										<div>
 											<h2>Morning Report</h2>
 											<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_morning_report.php</p>
@@ -842,7 +851,7 @@ require_once('../../private/initialize.php');
 
 									<!-- top10 -->
 									<div id="Tab7" class="tabcontent">
-										<h1><u>TOP10</u></h1> 
+										<h1><u>TOP10</u></h1>
 										<div>
 											<h2>Get Extents By Location Id</h2>
 											<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_extents_by_location_id.php</p>
@@ -896,20 +905,6 @@ require_once('../../private/initialize.php');
 									</div>
 
 									<script>
-										function openTab(evt, tabName) {
-											var i, tabcontent, tablinks;
-											tabcontent = document.getElementsByClassName("tabcontent");
-											for (i = 0; i < tabcontent.length; i++) {
-												tabcontent[i].style.display = "none";
-											}
-											tablinks = document.getElementsByClassName("tablinks");
-											for (i = 0; i < tablinks.length; i++) {
-												tablinks[i].className = tablinks[i].className.replace(" active", "");
-											}
-											document.getElementById(tabName).style.display = "block";
-											evt.currentTarget.className += " active";
-										}
-
 										// Get the element with id="defaultOpen" and click on it
 										document.getElementById("defaultOpen").click();
 									</script>
