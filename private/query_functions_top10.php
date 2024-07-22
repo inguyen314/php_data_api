@@ -216,8 +216,6 @@ function find_flow_in_from_location_id($db, $location_id) {
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-
-
 function find_flow_out_from_location_id($db, $location_id) {
 	$stmnt_query = null;
 	
@@ -251,8 +249,7 @@ function find_yearly_flow_max_rdl($db, $cwms_ts_id, $year) {
 	$stmnt_query = null;
 	$data = null;
 	
-	try 
-	{		
+	try {		
 		$sql = "select date_time, value as max_value, quality_code from table(rdl.timeseries.getReportDataByType ('TS_AGG_MAX', '".$cwms_ts_id."', 
 				to_date('01-01-'|| '".$year."' || ' 00:01' ,'mm-dd-yyyy hh24:mi'),
 				to_date('12-31-' || '".$year."' || ' 23.59' ,'mm-dd-yyyy hh24:mi'),
@@ -295,8 +292,7 @@ function find_yearly_flow_min_rdl($db, $cwms_ts_id, $year) {
 	$stmnt_query = null;
 	$data = null;
 	
-	try 
-	{		
+	try {		
 		$sql = "select date_time, value as min_value, quality_code from table(rdl.timeseries.getReportDataByType ('TS_AGG_MIN', '".$cwms_ts_id."', 
 				to_date('01-01-'|| '".$year."' || ' 00:01' ,'mm-dd-yyyy hh24:mi'),
 				to_date('12-31-' || '".$year."' || ' 23.59' ,'mm-dd-yyyy hh24:mi'),
