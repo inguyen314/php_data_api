@@ -859,12 +859,6 @@ require_once('../../private/initialize.php');
 										<p>This is the content of tab 8.</p>
 									</div>
 
-									<!-- misc 2 -->
-									<div id="Tab9" class="tabcontent">
-										<h3>Tab 9 Content</h3>
-										<p>This is the content of tab 9.</p>
-									</div>
-
 									<script>
 										// Get the element with id="defaultOpen" and click on it
 										document.getElementById("defaultOpen").click();
