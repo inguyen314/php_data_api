@@ -64,6 +64,12 @@ function locationIdRatingStageUsgs() {
     openURL(baseUrl, { location_id: userInput });
 }
 
+function locationIdStorage() {
+    const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_location_id_storage.php";
+    const userInput = document.getElementById("location_id_storage").value;
+    openURL(baseUrl, { location_id: userInput });
+}
+
 function ratingStageUsgs() {
     const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_rating_stage_usgs.php";
     const userInput = document.getElementById("rating_stage_usgs").value;

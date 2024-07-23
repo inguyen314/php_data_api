@@ -554,6 +554,67 @@ function find_rating_stage_nws($db) {
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
+function find_location_id_storage($db) {
+	$stmnt_query = null;
+	$data = [];
+	
+	try {		
+		$sql = "select * from CWMS_V_RATING_LOCAL
+				where 
+					version = 'Production'
+					--and location_id = 'Wappapello Lk-St Francis'
+					and template_id like 'Stage%' 
+					and template_id like '%Stor.COE%'
+					and template_id not like '%,%' 
+					and active_flag = 'T'
+					and aliased_item is null
+				order by effective_date desc";
+		
+		$stmnt_query = oci_parse($db, $sql);
+		$status = oci_execute($stmnt_query);
+
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+
+			$obj = (object) [
+				"rating_code" => $row['RATING_CODE'],
+				"parent_rating_code" => $row['PARENT_RATING_CODE'],
+				"office_id" => $row['OFFICE_ID'],
+				"rating_id" => $row['RATING_ID'],
+				"location_id" => $row['LOCATION_ID'],
+				"template_id" => $row['TEMPLATE_ID'],
+				"version" => $row['VERSION'],
+				"native_units" => $row['NATIVE_UNITS'],
+				"effective_date" => $row['EFFECTIVE_DATE'],
+				"create_date" => $row['CREATE_DATE'],
+				"active_flag" => $row['ACTIVE_FLAG'],
+				"formula" => $row['FORMULA'],
+				"description" => $row['DESCRIPTION'],
+				"aliased_item" => $row['ALIASED_ITEM'],
+				"loc_alias_category" => $row['LOC_ALIAS_CATEGORY'],
+				"loc_alias_group" => $row['LOC_ALIAS_GROUP'],
+				"database_units" => $row['DATABASE_UNITS'],
+				"rating_spec_code" => $row['RATING_SPEC_CODE'],
+				"template_code" => $row['TEMPLATE_CODE'],
+				"transition_code" => $row['TRANSITION_DATE']			
+			];
+			array_push($data, $obj);
+		}
+	}
+	catch (Exception $e)  
+	{
+		$e = oci_error($db);  
+		trigger_error(htmlentities($e['message']), E_USER_ERROR);
+
+		return null;
+	}
+	finally {
+		oci_free_statement($stmnt_query); 
+	}
+
+	return $data;
+}
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 function find_location_id_rating_stage_nws($db,$location_id) {
 	$stmnt_query = null;
 	$data = null;

@@ -1,11 +1,12 @@
 <?php
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function find_rating_coe_table($db, $location_id) {
+function find_rating_coe_table($db, $location_id)
+{
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "select location_id, template_id, version, effective_date, rating_id, create_date, round(cwms_util.convert_units(ind_value_1, 'm', 'ft'),2) as stage , round(cwms_util.convert_units(dep_value, 'cms', 'cfs'),0) as flow
 		from CWMS_20.AV_RATING_VALUES
 		join CWMS_V_RATING on
@@ -24,11 +25,11 @@ function find_rating_coe_table($db, $location_id) {
 			and location_id not like '%0%'
 			and aliased_item is null
 		order by ind_value_1 desc";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$obj = (object) [
 				"location_id" => $row['LOCATION_ID'],
 				"template_id" => $row['TEMPLATE_ID'],
@@ -37,30 +38,29 @@ function find_rating_coe_table($db, $location_id) {
 				"rating_id" => $row['RATING_ID'],
 				"create_date" => $row['CREATE_DATE'],
 				"stage" => $row['STAGE'],
-				"flow" => $row['FLOW']			
+				"flow" => $row['FLOW']
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function find_rating_usgs_table($db, $location_id) {
+function find_rating_usgs_table($db, $location_id)
+{
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "select location_id, template_id, version, effective_date, rating_id, create_date, round(cwms_util.convert_units(ind_value_1, 'm', 'ft'),2) as stage , round(cwms_util.convert_units(dep_value, 'cms', 'cfs'),0) as flow
 		from CWMS_20.AV_RATING_VALUES
 		join CWMS_V_RATING on
@@ -79,12 +79,12 @@ function find_rating_usgs_table($db, $location_id) {
 			and location_id not like '%0%'
 			and aliased_item is null
 		order by ind_value_1 desc";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$obj = (object) [
 				"location_id" => $row['LOCATION_ID'],
 				"template_id" => $row['TEMPLATE_ID'],
@@ -93,30 +93,29 @@ function find_rating_usgs_table($db, $location_id) {
 				"rating_id" => $row['RATING_ID'],
 				"create_date" => $row['CREATE_DATE'],
 				"stage" => $row['STAGE'],
-				"flow" => $row['FLOW']			
+				"flow" => $row['FLOW']
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
-	finally {
-		oci_free_statement($stmnt_query); 
-	}
-	
+
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function find_rating_nws_table($db, $location_id) {
+function find_rating_nws_table($db, $location_id)
+{
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "select location_id, template_id, version, effective_date, rating_id, create_date, round(cwms_util.convert_units(ind_value_1, 'm', 'ft'),2) as stage , round(cwms_util.convert_units(dep_value, 'cms', 'cfs'),0) as flow
 		from CWMS_20.AV_RATING_VALUES
 		join CWMS_V_RATING on
@@ -135,12 +134,12 @@ function find_rating_nws_table($db, $location_id) {
 			and location_id not like '%0%'
 			and aliased_item is null
 		order by ind_value_1 desc";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$obj = (object) [
 				"location_id" => $row['LOCATION_ID'],
 				"template_id" => $row['TEMPLATE_ID'],
@@ -149,30 +148,29 @@ function find_rating_nws_table($db, $location_id) {
 				"rating_id" => $row['RATING_ID'],
 				"create_date" => $row['CREATE_DATE'],
 				"stage" => $row['STAGE'],
-				"flow" => $row['FLOW']			
+				"flow" => $row['FLOW']
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
-	finally {
-		oci_free_statement($stmnt_query); 
-	}
-	
+
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function find_location_level_by_basin($db, $basin, $specified_level_id) {
+function find_location_level_by_basin($db, $basin, $specified_level_id)
+{
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "select  basin, sub_basin, location_id, elevation, vertical_datum, group_id, category_id
 					,specified_level_id, constant_level, level_date, location_level_id
 					,attribute_id, unit_system, attribute_unit, level_unit ,attribute_value, interval_origin, calendar_interval, time_interval
@@ -207,12 +205,12 @@ function find_location_level_by_basin($db, $basin, $specified_level_id) {
 				ORDER BY basin,
 				location_id asc,
 				calendar_offset asc";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$obj = (object) [
 				"basin" => $row['BASIN'],
 				"sub_basin" => $row['SUB_BASIN'],
@@ -253,21 +251,93 @@ function find_location_level_by_basin($db, $basin, $specified_level_id) {
 				"attribute_parameter_id" => $row['ATTRIBUTE_PARAMETER_ID'],
 				"attribute_base_parameter_id" => $row['ATTRIBUTE_BASE_PARAMETER_ID'],
 				"attribute_sub_parameter_id" => $row['ATTRIBUTE_SUB_PARAMETER_ID'],
-				"attribute_duration_id" => $row['ATTRIBUTE_DURATION_ID']			
+				"attribute_duration_id" => $row['ATTRIBUTE_DURATION_ID']
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-?>
+function find_storage($db, $location_id)
+{
+	$stmnt_query = null;
+	$data = [];
+
+	try {
+		$sql = "select location_id
+				,rating_id
+				,template_id
+				,version
+				,effective_date
+				,create_date
+				,round(cwms_util.convert_units(ind_value_1, 'm', 'ft'),2) as stage
+				,round(cwms_util.convert_units(dep_value, 'm3', 'ac-ft'),0) as Storage
+				,round(cwms_util.convert_units(dep_value/1.9834591996927, 'm3', 'ac-ft'),0) as StorageDSF
+				from CWMS_20.AV_RATING_VALUES
+				join CWMS_V_RATING on
+				CWMS_20.AV_RATING_VALUES.rating_code=CWMS_V_RATING.rating_code
+				where CWMS_20.AV_RATING_VALUES.rating_code = (select rating_code from CWMS_V_RATING
+					where location_id = '" . $location_id . "' 
+						and active_flag = 'T'
+						and template_id like '%Stor%' 
+						and template_id like '%Stage%'
+						and template_id NOT like '%SEDIMENT%'
+					order by effective_date desc
+					FETCH FIRST 1 ROWS ONLY
+						)
+					and location_id not like '%0%'
+					and aliased_item is null
+				order by ind_value_1 asc";
+
+		$stmnt_query = oci_parse($db, $sql);
+		$status = oci_execute($stmnt_query);
+
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
+			$obj = (object) [
+				//"rating_code" => $row['RATING_CODE'],
+				//"parent_rating_code" => $row['PARENT_RATING_CODE'],
+				//"office_id" => $row['OFFICE_ID'],
+				"rating_id" => $row['RATING_ID'],
+				"location_id" => $row['LOCATION_ID'],
+				"template_id" => $row['TEMPLATE_ID'],
+				"version" => $row['VERSION'],
+				//"native_units" => $row['NATIVE_UNITS'],
+				"effective_date" => $row['EFFECTIVE_DATE'],
+				"create_date" => $row['CREATE_DATE'],
+				//"active_flag" => $row['ACTIVE_FLAG'],
+				//"formula" => $row['FORMULA'],
+				//"description" => $row['DESCRIPTION'],
+				//"aliased_item" => $row['ALIASED_ITEM'],
+				//"loc_alias_category" => $row['LOC_ALIAS_CATEGORY'],
+				//"loc_alias_group" => $row['LOC_ALIAS_GROUP'],
+				//"database_units" => $row['DATABASE_UNITS'],
+				//"rating_spec_code" => $row['RATING_SPEC_CODE'],
+				//"template_code" => $row['TEMPLATE_CODE'],
+				"stage" => $row['STAGE'],
+				"storage" => $row['STORAGE'],
+				"storagedsf" => $row['STORAGEDSF']
+			];
+			array_push($data, $obj);
+		}
+	} catch (Exception $e) {
+		$e = oci_error($db);
+		trigger_error(htmlentities($e['message']), E_USER_ERROR);
+
+		return null;
+	} finally {
+		oci_free_statement($stmnt_query);
+	}
+
+	return $data;
+}
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------

@@ -244,6 +244,14 @@ require_once('../../private/initialize.php');
 											<button onclick="locationIdRatingStageUsgs()">Submit</button>
 										</div>
 
+										<h2>Get Location Id Storage</h2>
+										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_location_id_storage.php</p>
+										<div>
+											<label>location_id: </label>
+											<input type="text" id="location_id_storage" disabled>
+											<button onclick="locationIdStorage()">Submit</button>
+										</div>
+
 										<h2>Get Rating Stage Usgs</h2>
 										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_rating_stage_usgs.php</p>
 										<div>
@@ -474,6 +482,14 @@ require_once('../../private/initialize.php');
 
 									<!-- data -->
 									<div id="Tab5" class="tabcontent">
+										<h2>Get Storage Table</h2>
+										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_storage_table.php</p>
+										<div>
+											<label>location_id: </label>
+											<input type="text" id="storage_table" value="Carlyle Lk-Kaskaskia">
+											<button onclick="ratingStorageTable()">Submit</button>
+										</div>
+
 										<h2>Get Rating COE Table</h2>
 										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_rating_coe_table.php</p>
 										<div>

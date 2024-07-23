@@ -1,3 +1,9 @@
+function ratingStorageTable() {
+    const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_storage_table.php";
+    const userInput = document.getElementById("storage_table").value;
+    openURL(baseUrl, { location_id: userInput });
+}
+
 function ratingCoeTable() {
     const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_rating_coe_table.php";
     const userInput = document.getElementById("rating_coe_table").value;
