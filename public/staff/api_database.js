@@ -57,3 +57,9 @@ function vSessionB3cwpa18() {
     const userInput = document.getElementById("v_session_b3cwpa18").value;
     openURL(baseUrl, { userInput });
 }
+
+function dbChangeLog() {
+    const baseUrl = "https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_db_change_log.php";
+    const userInput = document.getElementById("change_log").value;
+    openURL(baseUrl, { userInput });
+}

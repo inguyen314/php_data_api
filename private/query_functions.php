@@ -1184,3 +1184,38 @@ function find_stage_and_stage_24($db, $cwms_ts_id, $hour_cst, $interval, $interv
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
+function find_db_change_log($db) {
+	$stmnt_query = null;
+	$data = null;
+	
+	try {
+		$sql = "select version, description 
+            from cwms_v_db_change_log
+            where application = 'CWMS'
+            and version_date = (select max(version_date) 
+                                from cwms_v_db_change_log 
+                                where application = 'CWMS')";
+		
+		$stmnt_query = oci_parse($db, $sql);
+		$status = oci_execute($stmnt_query);
+		
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {		
+			$data = (object) 
+			[
+				"version" => $row['VERSION'],
+				"description" => $row['DESCRIPTION']
+			];
+		}
+	}
+	catch (Exception $e) {
+		$e = oci_error($db);  
+		trigger_error(htmlentities($e['message']), E_USER_ERROR);
+		return null;
+	}
+	finally {
+		oci_free_statement($stmnt_query);
+	}
+	return $data;
+}
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------

@@ -81,6 +81,14 @@ require_once('../../private/initialize.php');
 											<button onclick="dbInfo()">Submit</button>
 										</div>
 
+										<h2>Get Database Change Log</h2>
+										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_db_change_log.php</p>
+										<div>
+											<label>disabled: </label>
+											<input type="text" id="change_log" name="change_log" disabled>
+											<button onclick="dbChangeLog()">Submit</button>
+										</div>
+
 										<h2>Get Loading Application</h2>
 										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_loading_application.php</p>
 										<div>
