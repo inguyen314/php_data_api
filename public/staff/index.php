@@ -25,6 +25,7 @@ require_once('../../private/initialize.php');
 	<link rel="stylesheet" media="all" href="<?php echo url_for('/stylesheets/staff.css'); ?>" />
 	<script type="text/javascript" src="api.js"></script>
 	<script type="text/javascript" src="api_data.js"></script>
+	<script type="text/javascript" src="api_board.js"></script>
 	<script type="text/javascript" src="api_database.js"></script>
 	<script type="text/javascript" src="api_lake.js"></script>
 	<script type="text/javascript" src="api_location.js"></script>
@@ -62,7 +63,7 @@ require_once('../../private/initialize.php');
 										<button class="tablinks" onclick="openTab(event, 'Tab5')">Data</button>
 										<button class="tablinks" onclick="openTab(event, 'Tab6')">Morning</button>
 										<button class="tablinks" onclick="openTab(event, 'Tab7')">Top10</button>
-										<button class="tablinks" onclick="openTab(event, 'Tab8')">Misc</button>
+										<button class="tablinks" onclick="openTab(event, 'Tab8')">Board</button>
 									</div>
 
 									<!-- gage control -->
@@ -877,10 +878,15 @@ require_once('../../private/initialize.php');
 										</div>
 									</div>
 
-									<!-- misc -->
+									<!-- board -->
 									<div id="Tab8" class="tabcontent">
-										<h3>Tab 8 Content</h3>
-										<p>This is the content of tab 8.</p>
+										<h2>Get Backfull By Location Id</h2>
+										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_bankfull_by_location_id.php</p>
+										<div>
+											<label>location_id: </label>
+											<input type="text" id="bankfull_by_location_id" value="Lk Shelbyville-Kaskaskia">
+											<button onclick="bankfullByLocationId()">Submit</button>
+										</div>
 									</div>
 
 									<script>
