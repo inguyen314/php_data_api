@@ -880,12 +880,28 @@ require_once('../../private/initialize.php');
 
 									<!-- board -->
 									<div id="Tab8" class="tabcontent">
-										<h2>Get Backfull By Location Id</h2>
+										<h2>Get Bankfull By Location Id</h2>
 										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_bankfull_by_location_id.php</p>
 										<div>
 											<label>location_id: </label>
 											<input type="text" id="bankfull_by_location_id" value="Lk Shelbyville-Kaskaskia">
 											<button onclick="bankfullByLocationId()">Submit</button>
+										</div>
+
+										<h2>Get Lake Crest Forecast By Location Id</h2>
+										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_lake_crest_forecast_by_location_id.php</p>
+										<div>
+											<label>location_id: </label>
+											<input type="text" id="lake_crest_forecast_by_location_id" value="Lk Shelbyville-Kaskaskia">
+											<button onclick="lakeCrestForecastByLocationId()">Submit</button>
+										</div>
+
+										<h2>Get Crest Data By Tsid</h2>
+										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_crest_data_by_tsid.php</p>
+										<div>
+											<label>cwms_ts_id: </label>
+											<input type="text" id="crest_data_by_tsid" value="Chester-Mississippi.Stage.Inst.30Minutes.0.lrgsShef-rev">
+											<button onclick="crestDataByTsid()">Submit</button>
 										</div>
 									</div>
 
