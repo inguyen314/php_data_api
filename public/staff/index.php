@@ -903,6 +903,48 @@ require_once('../../private/initialize.php');
 											<input type="text" id="crest_data_by_tsid" value="Chester-Mississippi.Stage.Inst.30Minutes.0.lrgsShef-rev">
 											<button onclick="crestDataByTsid()">Submit</button>
 										</div>
+
+										<h2>Get Generation</h2>
+										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_generation.php</p>
+										<div>
+											<label>location_id: </label>
+											<input type="text" id="generation" disabled>
+											<button onclick="getGeneration()">Submit</button>
+										</div>
+
+										<h2>Get Generation 2</h2>
+										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_generation2.php</p>
+										<div>
+											<label>location_id: </label>
+											<input type="text" id="generation2" disabled>
+											<button onclick="getGeneration2()">Submit</button>
+										</div>
+
+										<h2>Get Inflow By Location Id</h2>
+										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_inflow_by_location_id.php</p>
+										<div>
+											<label>location_id: </label>
+											<input type="text" id="inflow_by_location_id" value="Carlyle Lk-Kaskaskia">
+											<button onclick="inflowByLocationId()">Submit</button>
+										</div>
+
+										<h2>Get Lake Storage By Location Id</h2>
+										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_lake_storage_by_location_id.php</p>
+										<div>
+											<label>location_id: </label>
+											<input type="text" id="lake_storage_by_location_id" value="Carlyle Lk-Kaskaskia">
+											<button onclick="lakeStorageByLocationId()">Submit</button>
+										</div>
+
+										<h2>Get Lower Upper Flow Limit By Tsid</h2>
+										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_lower_upper_flow_limit_by_tsid.php</p>
+										<div>
+											<label>cwms_ts_id: </label>
+											<input type="text" id="lower_upper_flow_limit_by_tsid" value="Carlyle-Kaskaskia.Flow.Inst.0.Flow Lower Limit">
+											<button onclick="lowerUpperFlowLimitByTsid()">Submit</button>
+										</div>
+
+
 									</div>
 
 									<script>
