@@ -1,19 +1,20 @@
 <?php
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function find_admin_by_username($db, $username) {
+function find_admin_by_username($db, $username)
+{
 	$stmnt_query = null;
 	$data = null;
-	
+
 	try {
 		$sql = "SELECT * FROM WM_MVS_CF.ADMINS ";
 		$sql .= "WHERE USERNAME = '" . $username . "'";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
-		$status = oci_execute($stmnt_query);		
-		
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			$data = (object) 
+		$status = oci_execute($stmnt_query);
+
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+			$data = (object)
 			[
 				"ID" => intval($row['ID']),
 				"FIRST_NAME" => $row['FIRST_NAME'],
@@ -23,71 +24,68 @@ function find_admin_by_username($db, $username) {
 				"HASHED_PASSWORD" => $row['HASHED_PASSWORD']
 			];
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
+	} finally {
 		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function set_options($db) {
+function set_options($db)
+{
 	$stmnt_query = null;
-	
-    try {
+
+	try {
 		$sql = "alter session set  NLS_DATE_FORMAT='mm-dd-yyyy hh24:mi'";
-        $stmnt_query = oci_parse($db, $sql);
-        $status = oci_execute($stmnt_query);
-        if ( !$status ) {
-            $e = oci_error($db);
-            trigger_error(htmlentities($e['message']), E_USER_ERROR);
-        }
-    }
-    catch (Exception $e) {
-        $status = "ERROR: Could set database session options";
-    }
-	finally {
-		oci_free_statement($stmnt_query); 
+		$stmnt_query = oci_parse($db, $sql);
+		$status = oci_execute($stmnt_query);
+		if (!$status) {
+			$e = oci_error($db);
+			trigger_error(htmlentities($e['message']), E_USER_ERROR);
+		}
+	} catch (Exception $e) {
+		$status = "ERROR: Could set database session options";
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function set_options2($db) {
+function set_options2($db)
+{
 	//change format to = yyyy-mm-dd hh24:mi
 	$stmnt_query = null;
-	
-    try {
-        // mm-dd-yyyy hh24:mi
+
+	try {
+		// mm-dd-yyyy hh24:mi
 		$sql = "alter session set  NLS_DATE_FORMAT='yyyy-mm-dd hh24:mi'";
-        $stmnt_query = oci_parse($db, $sql);
-        $status = oci_execute($stmnt_query);
-        if ( !$status ) {
-            $e = oci_error($db);
-            trigger_error(htmlentities($e['message']), E_USER_ERROR);
-            // throw new \RuntimeException(self::$status);
-        }
-    }
-    catch (Exception $e) {
-        $status = "ERROR: Could set database session options";
-        // throw new \RuntimeException(self::$status);
-    }
-	finally {
-		oci_free_statement($stmnt_query); 
+		$stmnt_query = oci_parse($db, $sql);
+		$status = oci_execute($stmnt_query);
+		if (!$status) {
+			$e = oci_error($db);
+			trigger_error(htmlentities($e['message']), E_USER_ERROR);
+			// throw new \RuntimeException(self::$status);
+		}
+	} catch (Exception $e) {
+		$status = "ERROR: Could set database session options";
+		// throw new \RuntimeException(self::$status);
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function find_gage_control_basin($db, $basin) {
+function find_gage_control_basin($db, $basin)
+{
 	$stmnt_query = null;
 	$data = [];
 
-	try {		
+	try {
 		$sql = "select 	
 					loc.location_id, loc.elevation, loc.latitude, loc.longitude, loc.vertical_datum, loc.public_name, loc.location_kind_id
 					,station.station, station.drainage_area, station.area_unit
@@ -117,12 +115,12 @@ function find_gage_control_basin($db, $basin) {
 					and location_level2.specified_level_id = 'NGVD29'
 					and cga.category_id = 'RDL_MVS'
 					and cga2.category_id = 'RDL_Basins'
-					and cga2.group_id = '".$basin."'";
+					and cga2.group_id = '" . $basin . "'";
 
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$obj = (object) [
 				"location_id" => $row['LOCATION_ID'],
 				"elevation" => $row['ELEVATION'],
@@ -139,35 +137,34 @@ function find_gage_control_basin($db, $basin) {
 				"flood_level" => $row['FLOOD_LEVEL'],
 				"flood_level_location_level_id" => $row['FLOOD_LEVEL_LOCATION_LEVEL_ID'],
 				"flood_level_level_unit" => $row['FLOOD_LEVEL_LEVEL_UNIT'],
-				
+
 				"ngvd29" => $row['NGVD29'],
 				"ngvd29_location_level_id" => $row['NGVD29_LOCATION_LEVEL_ID'],
 				"ngvd29_level_unit" => $row['NGVD29_LEVEL_UNIT'],
-				
+
 				"owner" => $row['OWNER'],
 				"basin" => $row['BASIN']
 			];
-			array_push($data,$obj);
+			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function find_gage_control_location_id($db, $location_id) {
+function find_gage_control_location_id($db, $location_id)
+{
 	$stmnt_query = null;
 	$data = null;
 
-	try {		
+	try {
 		$sql = "select 	
 					loc.location_id, loc.elevation, loc.latitude, loc.longitude, loc.vertical_datum, loc.public_name, loc.location_kind_id
 					,station.station, station.drainage_area, station.area_unit
@@ -197,12 +194,12 @@ function find_gage_control_location_id($db, $location_id) {
 					and location_level2.specified_level_id = 'NGVD29'
 					and cga.category_id = 'RDL_MVS'
 					and cga2.category_id = 'RDL_Basins'
-					and loc.location_id = '".$location_id."'";
+					and loc.location_id = '" . $location_id . "'";
 
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$data = (object) [
 				"location_id" => $row['LOCATION_ID'],
 				"elevation" => $row['ELEVATION'],
@@ -219,34 +216,33 @@ function find_gage_control_location_id($db, $location_id) {
 				"flood_level" => $row['FLOOD_LEVEL'],
 				"flood_level_location_level_id" => $row['FLOOD_LEVEL_LOCATION_LEVEL_ID'],
 				"flood_level_level_unit" => $row['FLOOD_LEVEL_LEVEL_UNIT'],
-				
+
 				"ngvd29" => $row['NGVD29'],
 				"ngvd29_location_level_id" => $row['NGVD29_LOCATION_LEVEL_ID'],
 				"ngvd29_level_unit" => $row['NGVD29_LEVEL_UNIT'],
-				
+
 				"owner" => $row['OWNER'],
 				"basin" => $row['BASIN']
 			];
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function find_gage_control($db) {
+function find_gage_control($db)
+{
 	$stmnt_query = null;
 	$data = [];
 
-	try {		
+	try {
 		$sql = "select 	
 					loc.location_id, loc.elevation, loc.latitude, loc.longitude, loc.vertical_datum, loc.public_name, loc.location_kind_id
 					,station.station, station.drainage_area, station.area_unit
@@ -280,7 +276,7 @@ function find_gage_control($db) {
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$obj = (object) [
 				"location_id" => $row['LOCATION_ID'],
 				"elevation" => $row['ELEVATION'],
@@ -297,73 +293,71 @@ function find_gage_control($db) {
 				"flood_level" => $row['FLOOD_LEVEL'],
 				"flood_level_location_level_id" => $row['FLOOD_LEVEL_LOCATION_LEVEL_ID'],
 				"flood_level_level_unit" => $row['FLOOD_LEVEL_LEVEL_UNIT'],
-				
+
 				"ngvd29" => $row['NGVD29'],
 				"ngvd29_location_level_id" => $row['NGVD29_LOCATION_LEVEL_ID'],
 				"ngvd29_level_unit" => $row['NGVD29_LEVEL_UNIT'],
-				
+
 				"owner" => $row['OWNER'],
 				"basin" => $row['BASIN']
 			];
-			array_push($data,$obj);
+			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
-	}
-	return $data;
-}
-//------------------------------------------------------------------------------------------------------------------
-//------------------------------------------------------------------------------------------------------------------
-function find_db_info($db) {
-	$stmnt_query = null;
-	$data = null;
-	
-	try {
-		$sql = 'SELECT banner FROM v$version';
-		
-		$stmnt_query = oci_parse($db, $sql);
-		$status = oci_execute($stmnt_query);		
-		
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {		
-			$data = (object) 
-			[
-				"banner" => $row['BANNER']
-			];
-		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
-		trigger_error(htmlentities($e['message']), E_USER_ERROR);
-		return null;
-	}
-	finally {
+	} finally {
 		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function v_session($db,$session_username) {
+function find_db_info($db)
+{
 	$stmnt_query = null;
-	$data = [];
-	
+	$data = null;
+
 	try {
-		$sql = "select count(*) as session_count, status, process, program, machine, schemaname ";
-		$sql .= 'from v$session ';
-		$sql .= "where username='".$session_username."'";
-		$sql .= "group by status, process, program, machine, schemaname";
-		
+		$sql = 'SELECT banner FROM v$version';
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+			$data = (object)
+			[
+				"banner" => $row['BANNER']
+			];
+		}
+	} catch (Exception $e) {
+		$e = oci_error($db);
+		trigger_error(htmlentities($e['message']), E_USER_ERROR);
+		return null;
+	} finally {
+		oci_free_statement($stmnt_query);
+	}
+	return $data;
+}
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
+function v_session($db, $session_username)
+{
+	$stmnt_query = null;
+	$data = [];
+
+	try {
+		$sql = "select count(*) as session_count, status, process, program, machine, schemaname ";
+		$sql .= 'from v$session ';
+		$sql .= "where username='" . $session_username . "'";
+		$sql .= "group by status, process, program, machine, schemaname";
+
+		$stmnt_query = oci_parse($db, $sql);
+		$status = oci_execute($stmnt_query);
+
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$obj = (object) [
 				"session_count" => $row['SESSION_COUNT'],
 				"status" => $row['STATUS'],
@@ -374,87 +368,84 @@ function v_session($db,$session_username) {
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function v_session_active($db) {
+function v_session_active($db)
+{
 	$stmnt_query = null;
 	$data = [];
-	
+
 	try {
 		$sql = "SELECT COUNT(*) as active_sessions ";
 		$sql .= 'from v$session ';
 		$sql .= "where status='ACTIVE'";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$obj = (object) [
 				"active_sessions" => $row['ACTIVE_SESSIONS']
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function cp_comp_tasklist($db) {
+function cp_comp_tasklist($db)
+{
 	$stmnt_query = null;
 	$data = [];
-	
+
 	try {
 		$sql = "select loading_application_id,count(loading_application_id) as count from CCP.CP_COMP_TASKLIST group by loading_application_id";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$obj = (object) [
 				"loading_application_id" => $row['LOADING_APPLICATION_ID'],
 				"count" => $row['COUNT']
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function find_loading_application($db) {
+function find_loading_application($db)
+{
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "SELECT
 					loading_application_name,
 					COUNT(loading_application_name)
@@ -465,35 +456,34 @@ function find_loading_application($db) {
 					a.loading_application_id = t.loading_application_id
 				GROUP BY
 					loading_application_name";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$obj = (object) [
 				"loading_application_name" => $row['LOADING_APPLICATION_NAME'],
-				"count_loading_application_name" => $row['COUNT_LOADING_APPLICATION_NAME']				
+				"count_loading_application_name" => $row['COUNT_LOADING_APPLICATION_NAME']
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function find_comp_retry($db) {
+function find_comp_retry($db)
+{
 	$stmnt_query = null;
 	$data = [];
 
-	try {				
+	try {
 		$sql = "select site_datatype_id, site, loading_app, number_comps 
 			from (SELECT DISTINCT tl.site_datatype_id,
 			(SELECT b.cwms_ts_id FROM cwms_20.av_cwms_ts_id b WHERE b.ts_code=tl.site_datatype_id) AS site,
@@ -505,7 +495,7 @@ function find_comp_retry($db) {
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$obj = (object) [
 				"site_datatype_id" => $row['SITE_DATATYPE_ID'],
 				"site" => $row['SITE'],
@@ -514,54 +504,52 @@ function find_comp_retry($db) {
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e)  {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function find_username_at_log_message($db) {
+function find_username_at_log_message($db)
+{
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "select distinct session_username from CWMS_20.at_log_message";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$obj = (object) [
-				"session_username" => $row['SESSION_USERNAME']			
+				"session_username" => $row['SESSION_USERNAME']
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function find_at_log_message($db,$session_username) {
+function find_at_log_message($db, $session_username)
+{
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "select msg_id
 					,office_code
 					,log_timestamp_utc
@@ -578,13 +566,13 @@ function find_at_log_message($db,$session_username) {
 					,msg_type
 					,msg_text
 				from CWMS_20.at_log_message 
-				where session_username = '".$session_username."' 
+				where session_username = '" . $session_username . "' 
 				and ROWNUM <= 500";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$obj = (object) [
 				"msg_id" => $row['MSG_ID'],
 				"office_code" => $row['OFFICE_CODE'],
@@ -604,25 +592,24 @@ function find_at_log_message($db,$session_username) {
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function find_metadata_by_location_id($db, $location_id) {
+function find_metadata_by_location_id($db, $location_id)
+{
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "select  loc.location_code, 
 					loc.base_location_code, 
 					loc.sub_location_id, 
@@ -667,12 +654,12 @@ function find_metadata_by_location_id($db, $location_id) {
 				and loc.unit_system = 'EN'
 				and loc.sub_location_id is NOT null 
 				and stream.unit_system = 'EN'";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$obj = (object) [
 				"location_code" => $row['LOCATION_CODE'],
 				"base_location_code" => $row['BASE_LOCATION_CODE'],
@@ -710,30 +697,29 @@ function find_metadata_by_location_id($db, $location_id) {
 				"navigation_station" => $row['NAVIGATION_STATION'],
 				"drainage_area" => $row['DRAINAGE_AREA'],
 				"ungaged_area" => $row['UNGAGED_AREA']
-				
+
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
-	finally {
-		oci_free_statement($stmnt_query); 
-	}
-	
+
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function find_datum_conversion_by_basin($db, $basin) {
+function find_datum_conversion_by_basin($db, $basin)
+{
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "select  loc.location_code, 
 					loc.base_location_code, 
 					loc.base_location_code, 
@@ -832,13 +818,13 @@ function find_datum_conversion_by_basin($db, $basin) {
 				and basin.category_id = 'RDL_Basins'
                 and cga.category_id = 'RDL_MVS'
 				and cga.group_id = 'MVS'
-				and basin.group_id = '". $basin . "'";
-		
+				and basin.group_id = '" . $basin . "'";
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$obj = (object) [
 				"location_code" => $row['LOCATION_CODE'],
 				"base_location_code" => $row['BASE_LOCATION_CODE'],
@@ -918,25 +904,24 @@ function find_datum_conversion_by_basin($db, $basin) {
 				"shared_alias_id" => $row['SHARED_ALIAS_ID'],
 				"shared_ref_location_id" => $row['SHARED_REF_LOCATION_ID'],
 				"group_id" => $row['GROUP_ID'],
-				
+
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function find_datman_data_editing_status_by_basin($db, $basin, $type) {
+function find_datman_data_editing_status_by_basin($db, $basin, $type)
+{
 	$stmnt_query = null;
 	$data = [];
 
@@ -965,8 +950,8 @@ function find_datman_data_editing_status_by_basin($db, $basin, $type) {
 		and (upper(cwms_util.split_text(ts_id, 2, '.')) like upper(cwms_util.normalize_wildcards('Stage')) or upper(cwms_util.split_text(ts_id, 2, '.')) like upper(cwms_util.normalize_wildcards('Elev')))
 		and extents.location_id NOT IN ('Brickeys Ldg-Mississippi','Sterling Ldg-Mississippi','Paris-Mid Fork Salt','Pittsburg-Kaskaskia')";
 	}
-		
-	try {				
+
+	try {
 		$sql = "select 
 				basins.group_id as basin, 
 				basins.sub_location_id as sub_basin,
@@ -1013,15 +998,15 @@ function find_datman_data_editing_status_by_basin($db, $basin, $type) {
 				and cga.group_id in ('STAGE','ELEV')
 				and basins.category_id='RDL_Basins'
 				and basins.group_id='" . $basin . "'
-				".$q."
+				" . $q . "
 			order by 
 				basins.group_id,
 				location_sort_order";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$obj = (object) [
 				"basin" => $row['BASIN'],
 				"sub_basin" => $row['SUB_BASIN'],
@@ -1033,66 +1018,65 @@ function find_datman_data_editing_status_by_basin($db, $basin, $type) {
 				"parameter_id" => $row['PARAMETER_ID'],
 				"cwms_ts_id" => $row['CWMS_TS_ID'],
 				"time_zone_name" => $row['TIME_ZONE_NAME'],
-				
+
 				"min_date" => $row['MIN_DATE'],
 				"selected_year1" => $row['SELECTED_YEAR1'],
 				"max_date" => $row['MAX_DATE'],
 				"selected_year2" => $row['SELECTED_YEAR2'],
-				
+
 				"months_of_last_recorded_data" => $row['MONTHS_OF_LAST_RECORDED_DATA'],
 				"days_of_last_recorded_data" => $row['DAYS_OF_LAST_RECORDED_DATA'],
 				"year_of_data" => $row['YEAR_OF_DATA'],
-				
+
 				"parameter_type_id" => $row['PARAMETER_TYPE_ID'],
 				"interval_id" => $row['INTERVAL_ID'],
 				"duration_id" => $row['DURATION_ID'],
 				"version_id" => $row['VERSION_ID'],
-				
+
 				"min_date_day" => $row['MIN_DATE_DAY'],
 				"min_date_mon" => $row['MIN_DATE_MON'],
 				"min_date_year" => $row['MIN_DATE_YEAR'],
 				"min_date_time" => $row['MIN_DATE_TIME'],
-				
+
 				"max_date_day" => $row['MAX_DATE_DAY'],
 				"max_date_mon" => $row['MAX_DATE_MON'],
 				"max_date_year" => $row['MAX_DATE_YEAR'],
 				"max_date_time" => $row['MAX_DATE_TIME'],
-				
+
 				"sysdate" => $row['SYSDATE'],
-				"sysdate_new" => $row['SYSDATE_NEW']	
+				"sysdate_new" => $row['SYSDATE_NEW']
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 		return null;
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
-	finally {
-		oci_free_statement($stmnt_query); 
-	}	
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function find_stage_and_stage_24($db, $cwms_ts_id, $hour_cst, $interval, $interval2) {
+function find_stage_and_stage_24($db, $cwms_ts_id, $hour_cst, $interval, $interval2)
+{
 	$stmnt_query = null;
 	$data = null;
-	
-	try {		
+
+	try {
 		$sql = "with cte_stage as (
 			select cwms_ts_id
 				, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') as date_time
-				, cwms_util.split_text('".$cwms_ts_id."', 1, '.') as location_id
-				, cwms_util.split_text('".$cwms_ts_id."', 2, '.') as parameter_id
+				, cwms_util.split_text('" . $cwms_ts_id . "', 1, '.') as location_id
+				, cwms_util.split_text('" . $cwms_ts_id . "', 2, '.') as parameter_id
 				, value
 				, unit_id
 				, quality_code
 			from cwms_v_tsv_dqu_30d tsv
 			where 
-				tsv.cwms_ts_id = '".$cwms_ts_id."'  
-				and date_time =  to_date( to_char(sysdate, 'mm-dd-yyyy') || '".$hour_cst."'||':00:00' ,'mm-dd-yyyy hh24:mi:ss') - interval '".$interval."' day
+				tsv.cwms_ts_id = '" . $cwms_ts_id . "'  
+				and date_time =  to_date( to_char(sysdate, 'mm-dd-yyyy') || '" . $hour_cst . "'||':00:00' ,'mm-dd-yyyy hh24:mi:ss') - interval '" . $interval . "' day
 				and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 
 					case 
 						when cwms_util.split_text(tsv.cwms_ts_id, 2, '.') in ('Stage', 'Elev') then 'ft' 
@@ -1107,15 +1091,15 @@ function find_stage_and_stage_24($db, $cwms_ts_id, $hour_cst, $interval, $interv
 			cte_stage_24 as (
 			select cwms_ts_id
 				, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') as date_time
-				, cwms_util.split_text('".$cwms_ts_id."', 1, '.') as location_id
-				, cwms_util.split_text('".$cwms_ts_id."', 2, '.') as parameter_id
+				, cwms_util.split_text('" . $cwms_ts_id . "', 1, '.') as location_id
+				, cwms_util.split_text('" . $cwms_ts_id . "', 2, '.') as parameter_id
 				, value
 				, unit_id
 				, quality_code
 			from cwms_v_tsv_dqu_30d tsv
 			where 
-				tsv.cwms_ts_id = '".$cwms_ts_id."'  
-				and date_time =  to_date( to_char(sysdate, 'mm-dd-yyyy') || '".$hour_cst."'||':00:00' ,'mm-dd-yyyy hh24:mi:ss') - interval '".$interval2."' day
+				tsv.cwms_ts_id = '" . $cwms_ts_id . "'  
+				and date_time =  to_date( to_char(sysdate, 'mm-dd-yyyy') || '" . $hour_cst . "'||':00:00' ,'mm-dd-yyyy hh24:mi:ss') - interval '" . $interval2 . "' day
 				and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 
 					case 
 						when cwms_util.split_text(tsv.cwms_ts_id, 2, '.') in ('Stage', 'Elev') then 'ft' 
@@ -1146,12 +1130,12 @@ function find_stage_and_stage_24($db, $cwms_ts_id, $hour_cst, $interval, $interv
 			from cte_stage cte_stage
 				left join cte_stage_24 cte_stage_24 ON
 				cte_stage.location_id=cte_stage_24.location_id";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$data = (object) [
 				"stage_cwms_ts_id" => $row['STAGE_CWMS_TS_ID'],
 				"stage_date_time" => $row['STAGE_DATE_TIME'],
@@ -1167,27 +1151,26 @@ function find_stage_and_stage_24($db, $cwms_ts_id, $hour_cst, $interval, $interv
 				"stage_24_parameter_id" => $row['STAGE_24_PARAMETER_ID'],
 				"stage_24_value" => $row['STAGE_24_VALUE'],
 				"stage_24_unit_id" => $row['STAGE_24_UNIT_ID'],
-				"stage_24_quality_code" => $row['STAGE_24_QUALITY_CODE']		
+				"stage_24_quality_code" => $row['STAGE_24_QUALITY_CODE']
 			];
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function find_db_change_log($db) {
+function find_db_change_log($db)
+{
 	$stmnt_query = null;
 	$data = null;
-	
+
 	try {
 		$sql = "select version, description 
             from cwms_v_db_change_log
@@ -1195,24 +1178,22 @@ function find_db_change_log($db) {
             and version_date = (select max(version_date) 
                                 from cwms_v_db_change_log 
                                 where application = 'CWMS')";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
-		
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {		
-			$data = (object) 
+
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+			$data = (object)
 			[
 				"version" => $row['VERSION'],
 				"description" => $row['DESCRIPTION']
 			];
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 		return null;
-	}
-	finally {
+	} finally {
 		oci_free_statement($stmnt_query);
 	}
 	return $data;

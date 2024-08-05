@@ -1,15 +1,16 @@
 <?php
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_lake_storage($db, $cwms_ts_id) {
+function get_lake_storage($db, $cwms_ts_id)
+{
 	$stmnt_query = null;
 	$data = null;
-	
-	try {		
+
+	try {
 		$sql = "with cte_storage as (
 					select date_time, value, unit_id, cwms_ts_id, cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
 					from CWMS_20.AV_TSV_DQU_30D
-					where cwms_ts_id = '".$cwms_ts_id."' || '.Stor.Inst.30Minutes.0.RatingCOE'
+					where cwms_ts_id = '" . $cwms_ts_id . "' || '.Stor.Inst.30Minutes.0.RatingCOE'
 					and date_time = to_date(to_char((cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT')), 'mm-dd-yyyy') || '00:00' ,'mm-dd-yyyy hh24:mi')
 					and unit_id = 'ac-ft'
 				),
@@ -66,7 +67,7 @@ function get_lake_storage($db, $cwms_ts_id) {
 								from cte_new_top_bottom_data 
 								where specified_level_id = 'Bottom of Flood' ) bof
 								on toc.location_id = bof.location_id 
-					where toc.location_id = '".$cwms_ts_id."' and toc.specified_level_id = 'Top of Conservation'
+					where toc.location_id = '" . $cwms_ts_id . "' and toc.specified_level_id = 'Top of Conservation'
 				)
 				select cte_storage.date_time
 					,cte_storage.value
@@ -84,11 +85,11 @@ function get_lake_storage($db, $cwms_ts_id) {
 				from cte_storage
 					left join top_bottom_data top_bottom_data on
 					cte_storage.location_id = top_bottom_data.location_id";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$data = (object) [
 				"date_time" => $row['DATE_TIME'],
 				"value" => $row['VALUE'],
@@ -105,39 +106,38 @@ function get_lake_storage($db, $cwms_ts_id) {
 				"bof_location_level_id" => $row['BOF_LOCATION_LEVEL_ID']
 			];
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_precip_lake($db, $location_id) {
+function get_precip_lake($db, $location_id)
+{
 	$stmnt_query = null;
 	$data = null;
-	
-	try {		
+
+	try {
 		$sql = "select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
 					,value
 					,cwms_ts_id
 					,cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT') as date_time
 					,unit_id
 				from CWMS_20.AV_TSV_DQU_30D
-				where cwms_ts_id = '".$location_id."' || '.Precip.Total.~1Day.1Day.lakerep-rev'
+				where cwms_ts_id = '" . $location_id . "' || '.Precip.Total.~1Day.1Day.lakerep-rev'
 				and (cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')) = to_date(to_char((cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT')), 'mm-dd-yyyy') || '00:00' ,'mm-dd-yyyy hh24:mi')
 				and unit_id = 'in'
 				order by date_time desc";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$data = (object) [
 				"location_id" => $row['LOCATION_ID'],
 				"value" => $row['VALUE'],
@@ -146,24 +146,23 @@ function get_precip_lake($db, $location_id) {
 				"unit_id" => $row['UNIT_ID']
 			];
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_inflow($db, $location_id) {
+function get_inflow($db, $location_id)
+{
 	$stmnt_query = null;
 	$data = null;
-	
-	try {		
+
+	try {
 		$sql = "select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
 					,value
 					,cwms_ts_id
@@ -171,16 +170,16 @@ function get_inflow($db, $location_id) {
 					,unit_id
 				from cwms_v_tsv_dqu_30d 
 				where cwms_ts_id like '%Flow-In.Ave.~1Day.1Day.lakerep-rev' 
-				and cwms_ts_id like '".$location_id."' || '%'
+				and cwms_ts_id like '" . $location_id . "' || '%'
 				and unit_id = 'cfs'
 				and (cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT')) = to_date(to_char((cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT')), 'mm-dd-yyyy') || '00:00' ,'mm-dd-yyyy hh24:mi')  - interval '1' day
 				order by data_entry_date desc
 				fetch first 1 rows only";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$data = (object) [
 				"location_id" => $row['LOCATION_ID'],
 				"value" => $row['VALUE'],
@@ -189,24 +188,23 @@ function get_inflow($db, $location_id) {
 				"unit_id" => $row['UNIT_ID']
 			];
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_outflow($db, $location_id) {
+function get_outflow($db, $location_id)
+{
 	$stmnt_query = null;
 	$data = null;
-	
-	try {		
+
+	try {
 		$sql = "-- EVENING
 				with cte_rend_evening as (
 					select 'Rend Lk-Big Muddy' as project_id 
@@ -325,11 +323,11 @@ function get_outflow($db, $location_id) {
 					specified_level_id = 'Bankfull' 
 					and location_id = 
 						case
-							when '".$location_id."' = 'Lk Shelbyville-Kaskaskia' then 'Lk Shelbyville'
-							when '".$location_id."' = 'Wappapello Lk-St Francis' then 'Wappapello Lk'
-							when '".$location_id."' = 'Rend Lk-Big Muddy' then 'Rend Lk'
-							when '".$location_id."' = 'Mark Twain Lk-Salt' then 'Mark Twain Lk'
-							when '".$location_id."' = 'Carlyle Lk-Kaskaskia' then 'Carlyle Lk'
+							when '" . $location_id . "' = 'Lk Shelbyville-Kaskaskia' then 'Lk Shelbyville'
+							when '" . $location_id . "' = 'Wappapello Lk-St Francis' then 'Wappapello Lk'
+							when '" . $location_id . "' = 'Rend Lk-Big Muddy' then 'Rend Lk'
+							when '" . $location_id . "' = 'Mark Twain Lk-Salt' then 'Mark Twain Lk'
+							when '" . $location_id . "' = 'Carlyle Lk-Kaskaskia' then 'Carlyle Lk'
 						end 
 					and unit_system = 'EN'
 					and level_unit = 'cfs'
@@ -359,13 +357,13 @@ function get_outflow($db, $location_id) {
 					cte_all_evening_outflow.project_id = cte_all_midnight_outflow.project_id 
 						left join cte_bankfull bankfull on
 						cte_all_evening_outflow.project_id = bankfull.project_id
-				where cte_all_midnight_outflow.project_id = '".$location_id."'
-				and cte_all_evening_outflow.project_id = '".$location_id."'";
-		
+				where cte_all_midnight_outflow.project_id = '" . $location_id . "'
+				and cte_all_evening_outflow.project_id = '" . $location_id . "'";
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$data = (object) [
 				"project_id" => $row['PROJECT_ID'],
 				"midnight_date_time" => $row['MIDNIGHT_DATE_TIME'],
@@ -376,24 +374,23 @@ function get_outflow($db, $location_id) {
 				"bankfull_unit" => $row['BANKFULL_UNIT']
 			];
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_rule_curve($db, $location_id) {
+function get_rule_curve($db, $location_id)
+{
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "with cte_rule_curve_spec as (
 					select 
 						case
@@ -425,43 +422,42 @@ function get_rule_curve($db, $location_id) {
 				
 				select project_id, lev
 				from cte_rule_curve_spec
-				where project_id = '".$location_id."'
+				where project_id = '" . $location_id . "'
 				
 				union all
 				
 				select project_id, lev
 				from cte_rule_curve
-				where project_id = '".$location_id."'";
-		
+				where project_id = '" . $location_id . "'";
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$obj = (object) [
 				"project_id" => $row['PROJECT_ID'],
-				"lev" => $row['LEV']		
+				"lev" => $row['LEV']
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_crest_forecast($db, $location_id) {
+function get_crest_forecast($db, $location_id)
+{
 	$stmnt_query = null;
 	$data = null;
-	
-	try {		
+
+	try {
 		$sql = "with cte_crest_data as (
 					select 
 						case
@@ -486,12 +482,12 @@ function get_crest_forecast($db, $location_id) {
 					,data_entry_dt
 					,opt
 				from cte_crest_data
-				where project_id = '".$location_id."'";
-		
+				where project_id = '" . $location_id . "'";
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$data = (object) [
 				"project_id" => $row['PROJECT_ID'],
 				"crest" => $row['CREST'],
@@ -500,23 +496,22 @@ function get_crest_forecast($db, $location_id) {
 				"opt" => $row['OPT']
 			];
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_crest_data($db, $cwms_ts_id) {
+function get_crest_data($db, $cwms_ts_id)
+{
 	$stmnt_query = null;
 	$data = null;
-	try {		
+	try {
 		$sql = "with cte_crest as (
 					select cwms_ts_id
 						,cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
@@ -526,7 +521,7 @@ function get_crest_data($db, $cwms_ts_id) {
 						,quality_code
 						,data_entry_date
 					from cwms_v_tsv_dqu_30d 
-					where cwms_ts_id  = '".$cwms_ts_id."'
+					where cwms_ts_id  = '" . $cwms_ts_id . "'
 					and unit_id = 'ft'
 					order by data_entry_date desc
 					fetch first 1 rows only
@@ -540,12 +535,12 @@ function get_crest_data($db, $cwms_ts_id) {
 					,data_entry_date
 				from cte_crest
 				where date_time >= to_date(to_char(sysdate - 6/24, 'mm-dd-yyyy hh24:mi') ,'mm-dd-yyyy hh24:mi')";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$data = (object) [
 				"location_id" => $row['LOCATION_ID'],
 				"cwms_ts_id" => $row['CWMS_TS_ID'],
@@ -556,18 +551,15 @@ function get_crest_data($db, $cwms_ts_id) {
 				"data_entry_date" => $row['DATA_ENTRY_DATE']
 			];
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-?>

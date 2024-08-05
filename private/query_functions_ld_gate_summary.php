@@ -1,22 +1,23 @@
 <?php
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function find_ld_gate($db, $pool, $tw, $hinge, $taint, $roll) {
+function find_ld_gate($db, $pool, $tw, $hinge, $taint, $roll)
+{
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "with cte_pool as (
 				select cwms_ts_id
 					, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') as date_time
-					, cwms_util.split_text('".$pool."', 1, '.') as location_id
-					, cwms_util.split_text('".$pool."', 2, '.') as parameter_id
+					, cwms_util.split_text('" . $pool . "', 1, '.') as location_id
+					, cwms_util.split_text('" . $pool . "', 2, '.') as parameter_id
 					, value
 					, unit_id
 					, quality_code
 				from cwms_v_tsv_dqu tsv
 				where 
-					tsv.cwms_ts_id = '".$pool."'  
+					tsv.cwms_ts_id = '" . $pool . "'  
 					and date_time >= cast(cast(current_date as timestamp) at time zone 'UTC' as date) - interval '24' hour
 					and date_time <= cast(cast(current_date as timestamp) at time zone 'UTC' as date) + interval '0' day
 					and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 
@@ -33,14 +34,14 @@ function find_ld_gate($db, $pool, $tw, $hinge, $taint, $roll) {
 				tw as (
 				select cwms_ts_id
 					, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') as date_time
-					, cwms_util.split_text('".$tw."', 1, '.') as location_id
-					, cwms_util.split_text('".$tw."', 2, '.') as parameter_id
+					, cwms_util.split_text('" . $tw . "', 1, '.') as location_id
+					, cwms_util.split_text('" . $tw . "', 2, '.') as parameter_id
 					, value
 					, unit_id
 					, quality_code
 				from cwms_v_tsv_dqu tsv
 				where 
-					tsv.cwms_ts_id = '".$tw."'  
+					tsv.cwms_ts_id = '" . $tw . "'  
 					and date_time >= cast(cast(current_date as timestamp) at time zone 'UTC' as date) - interval '24' hour
 					and date_time <= cast(cast(current_date as timestamp) at time zone 'UTC' as date) + interval '0' day
 					and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 
@@ -57,14 +58,14 @@ function find_ld_gate($db, $pool, $tw, $hinge, $taint, $roll) {
 				hinge as (
 				select cwms_ts_id
 					, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') as date_time
-					, cwms_util.split_text('".$hinge."', 1, '.') as location_id
-					, cwms_util.split_text('".$hinge."', 2, '.') as parameter_id
+					, cwms_util.split_text('" . $hinge . "', 1, '.') as location_id
+					, cwms_util.split_text('" . $hinge . "', 2, '.') as parameter_id
 					, value
 					, unit_id
 					, quality_code
 				from cwms_v_tsv_dqu tsv
 				where 
-					tsv.cwms_ts_id = '".$hinge."'  
+					tsv.cwms_ts_id = '" . $hinge . "'  
 					and date_time >= cast(cast(current_date as timestamp) at time zone 'UTC' as date) - interval '24' hour
 					and date_time <= cast(cast(current_date as timestamp) at time zone 'UTC' as date) + interval '0' day
 					and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 
@@ -81,14 +82,14 @@ function find_ld_gate($db, $pool, $tw, $hinge, $taint, $roll) {
 				taint as (
 				select cwms_ts_id
 					, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') as date_time
-					, cwms_util.split_text('".$taint."', 1, '.') as location_id
-					, cwms_util.split_text('".$taint."', 2, '.') as parameter_id
+					, cwms_util.split_text('" . $taint . "', 1, '.') as location_id
+					, cwms_util.split_text('" . $taint . "', 2, '.') as parameter_id
 					, value
 					, unit_id
 					, quality_code
 				from cwms_v_tsv_dqu tsv
 				where 
-					tsv.cwms_ts_id = '".$taint."'  
+					tsv.cwms_ts_id = '" . $taint . "'  
 					and date_time >= cast(cast(current_date as timestamp) at time zone 'UTC' as date) - interval '24' hour
 					and date_time <= cast(cast(current_date as timestamp) at time zone 'UTC' as date) + interval '0' day
 					and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 
@@ -105,14 +106,14 @@ function find_ld_gate($db, $pool, $tw, $hinge, $taint, $roll) {
 				roll as (
 				select cwms_ts_id
 					, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') as date_time
-					, cwms_util.split_text('".$roll."', 1, '.') as location_id
-					, cwms_util.split_text('".$roll."', 2, '.') as parameter_id
+					, cwms_util.split_text('" . $roll . "', 1, '.') as location_id
+					, cwms_util.split_text('" . $roll . "', 2, '.') as parameter_id
 					, value
 					, unit_id
 					, quality_code
 				from cwms_v_tsv_dqu tsv
 				where 
-					tsv.cwms_ts_id = '".$roll."'  
+					tsv.cwms_ts_id = '" . $roll . "'  
 					and date_time >= cast(cast(current_date as timestamp) at time zone 'UTC' as date) - interval '24' hour
 					and date_time <= cast(cast(current_date as timestamp) at time zone 'UTC' as date) + interval '0' day
 					and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = 
@@ -146,11 +147,11 @@ function find_ld_gate($db, $pool, $tw, $hinge, $taint, $roll) {
 								left join roll roll on
 								pool.date_time=roll.date_time
 				order by pool.date_time desc";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {	
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$obj = (object) [
 				"date_time" => $row['DATE_TIME'],
 				"pool_cwms_ts_id" => $row['POOL_CWMS_TS_ID'],
@@ -171,18 +172,15 @@ function find_ld_gate($db, $pool, $tw, $hinge, $taint, $roll) {
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-?>

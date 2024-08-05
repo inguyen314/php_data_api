@@ -944,6 +944,115 @@ require_once('../../private/initialize.php');
 											<button onclick="lowerUpperFlowLimitByTsid()">Submit</button>
 										</div>
 
+										<h2>Get Lwrp By Tsid</h2>
+										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_lwrp_by_tsid.php</p>
+										<div>
+											<label>cwms_ts_id: </label>
+											<input type="text" id="get_lwrp_by_tsid" value="Chester-Mississippi.Stage.Inst.30Minutes.0.lrgsShef-rev">
+											<button onclick="getLwrpByTsid()">Submit</button>
+										</div>
+
+										<h2>Get Note By Location Id</h2>
+										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_note_by_location_id.php</p>
+										<div>
+											<label>location_id: </label>
+											<input type="text" id="get_note_by_location_id" value="Wappapello Lk-St Francis">
+											<button onclick="getNoteByLocationId()">Submit</button>
+										</div>
+
+										<h2>Get Nws Forecast By Day</h2>
+										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_nws_forecast_by_day.php</p>
+										<div>
+											<label>cwms_ts_id: </label>
+											<input type="text" id="get_nws_forecast_by_day_cwms_ts_id" value="Louisiana-Mississippi.Stage.Inst.6Hours.0.RVFShef-FF">
+											<br>
+											<label>nws_day1_date: </label>
+											<input type="text" id="get_nws_forecast_by_day" value="08-05-2024">
+											<button onclick="getNwsForecastByDay()">Submit</button>
+										</div>
+
+										<h2>Get Outflow2 By Location Id</h2>
+										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_outflow2_by_location_id.php</p>
+										<div>
+											<label>location_id: </label>
+											<input type="text" id="get_outflow2_by_location_id" value="Lk Shelbyville-Kaskaskia">
+											<button onclick="getOutflow2ByLocationId()">Submit</button>
+										</div>
+
+										<h2>Get Phase1 By Tsid</h2>
+										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_phase1_by_tsid.php</p>
+										<div>
+											<label>cwms_ts_id: </label>
+											<input type="text" id="get_phase1_by_tsid" value="Chester-Mississippi.Stage.Inst.30Minutes.0.lrgsShef-rev">
+											<button onclick="getPhase1ByTsid()">Submit</button>
+										</div>
+
+										<h2>Get Phase2 By Tsid</h2>
+										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_phase2_by_tsid.php</p>
+										<div>
+											<label>cwms_ts_id: </label>
+											<input type="text" id="get_phase2_by_tsid" value="Chester-Mississippi.Stage.Inst.30Minutes.0.lrgsShef-rev">
+											<button onclick="getPhase2ByTsid()">Submit</button>
+										</div>
+
+										<h2>Get Precip By Location Id</h2>
+										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_precip_by_location_id.php</p>
+										<div>
+											<label>location_id: </label>
+											<input type="text" id="get_precip_by_location_id" value="Wappapello Lk-St Francis">
+											<button onclick="getPrecipByLocationId()">Submit</button>
+										</div>
+
+										<h2>Get Record Stage By Tsid</h2>
+										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_record_stage_by_tsid.php</p>
+										<div>
+											<label>cwms_ts_id: </label>
+											<input type="text" id="get_record_stage_by_tsid" value="Chester-Mississippi.Stage.Inst.30Minutes.0.lrgsShef-rev">
+											<button onclick="getRecordStageByTsid()">Submit</button>
+										</div>
+
+										<h2>Get Roller Tainter By Tsid</h2>
+										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_roller_tainter_by_tsid.php</p>
+										<div>
+											<label>cwms_ts_id: </label>
+											<input type="text" id="get_roller_tainter_by_tsid" value="LD 25 Pool-Mississippi.Opening.Inst.~2Hours.0.lpmsShef-raw-Roll">
+											<button onclick="getRollerTainterByTsid()">Submit</button>
+										</div>
+
+										<h2>Get Rule Curve2 By Location Id</h2>
+										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_rule_curve2_by_location_id.php</p>
+										<div>
+											<label>location_id: </label>
+											<input type="text" id="get_rule_curve2_by_location_id" value="Wappapello Lk-St Francis">
+											<button onclick="getRuleCurve2ByLocationId()">Submit</button>
+										</div>
+
+										<h2>Get Schd</h2>
+										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_schd.php</p>
+										<div>
+											<label>location_id: </label>
+											<input type="text" id="get_schd" disabled>
+											<button onclick="getSchd()">Submit</button>
+										</div>
+
+										<h2>Get Stage Data By Tsid</h2>
+										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_stage_data_by_tsid.php</p>
+										<div>
+											<label>cwms_ts_id: </label>
+											<input type="text" id="get_stage_data_by_tsid" value="Chester-Mississippi.Stage.Inst.30Minutes.0.lrgsShef-rev">
+											<button onclick="getStageDataByTsid()">Submit</button>
+										</div>
+
+										<h2>Get Turbine By Location Id</h2>
+										<p>https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_turbine_by_location_id.php</p>
+										<div>
+											<label>location_id: </label>
+											<input type="text" id="get_turbine_by_location_id" value="Mark Twain Lk-Salt">
+											<button onclick="getTurbineByLocationId()">Submit</button>
+										</div>
+
+
+
 
 									</div>
 

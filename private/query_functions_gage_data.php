@@ -1,11 +1,12 @@
 <?php
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_stage_data($db, $cwms_ts_id) {
+function get_stage_data($db, $cwms_ts_id)
+{
 	$stmnt_query = null;
 	$data = null;
-	
-	try {		
+
+	try {
 		$sql = "with cte_last_max as (                
 					select ts_code, 
 						date_time, 
@@ -16,7 +17,7 @@ function get_stage_data($db, $cwms_ts_id) {
 						unit_id, 
 						quality_code
 					from CWMS_20.AV_TSV_DQU_30D
-					where cwms_ts_id = '".$cwms_ts_id."'
+					where cwms_ts_id = '" . $cwms_ts_id . "'
 					and (unit_id = 'ppm' or unit_id = 'F' or unit_id = CASE WHEN cwms_util.split_text(cwms_ts_id,2,'.') IN ('Stage','Elev') THEN 'ft' WHEN cwms_util.split_text(cwms_ts_id,2,'.') IN ('Precip','Depth') THEN 'in' END or unit_id = 'cfs' or unit_id = 'umho/cm' or unit_id = 'volt' or unit_id = 'su' or unit_id = 'FNU' or unit_id = 'mph' or unit_id = 'in-hg' or unit_id = 'deg')
 					order by date_time desc
 					fetch first 1 rows only
@@ -31,7 +32,7 @@ function get_stage_data($db, $cwms_ts_id) {
 						unit_id, 
 						quality_code
 					from CWMS_20.AV_TSV_DQU_30D
-					where cwms_ts_id = '".$cwms_ts_id."'
+					where cwms_ts_id = '" . $cwms_ts_id . "'
 					and (unit_id = 'ppm' or unit_id = 'F' or unit_id = CASE WHEN cwms_util.split_text(cwms_ts_id,2,'.') IN ('Stage','Elev') THEN 'ft' WHEN cwms_util.split_text(cwms_ts_id,2,'.') IN ('Precip','Depth') THEN 'in' END or unit_id = 'cfs' or unit_id = 'umho/cm' or unit_id = 'volt' or unit_id = 'su' or unit_id = 'FNU' or unit_id = 'mph' or unit_id = 'in-hg' or unit_id = 'deg')
 					and date_time = to_date((select (date_time - interval '6' hour) from cte_last_max) ,'mm-dd-yyyy hh24:mi:ss')
 					order by date_time desc
@@ -47,7 +48,7 @@ function get_stage_data($db, $cwms_ts_id) {
 						unit_id, 
 						quality_code
 					from CWMS_20.AV_TSV_DQU_30D
-					where cwms_ts_id = '".$cwms_ts_id."'
+					where cwms_ts_id = '" . $cwms_ts_id . "'
 					and (unit_id = 'ppm' or unit_id = 'F' or unit_id = CASE WHEN cwms_util.split_text(cwms_ts_id,2,'.') IN ('Stage','Elev') THEN 'ft' WHEN cwms_util.split_text(cwms_ts_id,2,'.') IN ('Precip','Depth') THEN 'in' END or unit_id = 'cfs' or unit_id = 'umho/cm' or unit_id = 'volt' or unit_id = 'su' or unit_id = 'FNU' or unit_id = 'mph' or unit_id = 'in-hg' or unit_id = 'deg')
 					and date_time = to_date((select (date_time - interval '24' hour) from cte_last_max) ,'mm-dd-yyyy hh24:mi:ss')
 					order by date_time desc
@@ -80,12 +81,12 @@ function get_stage_data($db, $cwms_ts_id) {
 					on last_max.cwms_ts_id = cte_6_hr.cwms_ts_id
 						left join cte_24_hr cte_24_hr
 						on last_max.cwms_ts_id = cte_24_hr.cwms_ts_id";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$data = (object) [
 				"ts_code" => $row['TS_CODE'],
 				"date_time" => $row['DATE_TIME'],
@@ -107,24 +108,23 @@ function get_stage_data($db, $cwms_ts_id) {
 				"late_date" => $row['LATE_DATE']
 			];
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function find_nws_forecast($db, $cwms_ts_id, $nws_day1_date, $nws_day2_date, $nws_day3_date) {
+function find_nws_forecast($db, $cwms_ts_id, $nws_day1_date, $nws_day2_date, $nws_day3_date)
+{
 	$stmnt_query = null;
 	$data = null;
-	try {		
+	try {
 		$sql = "with cte_day1 as (select cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT') as date_time
 					,value
 					,cwms_ts_id
@@ -132,9 +132,9 @@ function find_nws_forecast($db, $cwms_ts_id, $nws_day1_date, $nws_day2_date, $nw
 					,unit_id
 					,to_char(cwms_util.change_timezone(data_entry_date, 'UTC', 'CST6CDT'), 'mm/dd HH24:MI') as data_entry_date
 				from CWMS_20.AV_TSV_DQU
-				where cwms_ts_id = '".$cwms_ts_id."'
+				where cwms_ts_id = '" . $cwms_ts_id . "'
 					and unit_id = 'ft'
-					and date_time = to_date('".$nws_day1_date."' || '12:00' ,'mm-dd-yyyy hh24:mi')
+					and date_time = to_date('" . $nws_day1_date . "' || '12:00' ,'mm-dd-yyyy hh24:mi')
 				),
 				
 				day_2 as (
@@ -145,9 +145,9 @@ function find_nws_forecast($db, $cwms_ts_id, $nws_day1_date, $nws_day2_date, $nw
 					,unit_id
 					,to_char(cwms_util.change_timezone(data_entry_date, 'UTC', 'CST6CDT'), 'mm/dd HH24:MI') as data_entry_date
 				from CWMS_20.AV_TSV_DQU
-				where cwms_ts_id = '".$cwms_ts_id."'
+				where cwms_ts_id = '" . $cwms_ts_id . "'
 					and unit_id = 'ft'
-					and date_time = to_date('".$nws_day2_date."' || '12:00' ,'mm-dd-yyyy hh24:mi')
+					and date_time = to_date('" . $nws_day2_date . "' || '12:00' ,'mm-dd-yyyy hh24:mi')
 				),
 				
 				day_3 as (
@@ -158,9 +158,9 @@ function find_nws_forecast($db, $cwms_ts_id, $nws_day1_date, $nws_day2_date, $nw
 					,unit_id
 					,to_char(cwms_util.change_timezone(data_entry_date, 'UTC', 'CST6CDT'), 'mm/dd HH24:MI') as data_entry_date
 				from CWMS_20.AV_TSV_DQU
-				where cwms_ts_id = '".$cwms_ts_id."'
+				where cwms_ts_id = '" . $cwms_ts_id . "'
 					and unit_id = 'ft'
-					and date_time = to_date('".$nws_day3_date."' || '12:00' ,'mm-dd-yyyy hh24:mi')
+					and date_time = to_date('" . $nws_day3_date . "' || '12:00' ,'mm-dd-yyyy hh24:mi')
 				)
 				
 				select day1.date_time as date_time_day1, day1.value as value_day1, day1.cwms_ts_id as cwms_ts_id_day1, day1.location_id as location_id_day1, day1.unit_id as unit_id_day1, day1.data_entry_date as data_entry_date_day1
@@ -172,12 +172,12 @@ function find_nws_forecast($db, $cwms_ts_id, $nws_day1_date, $nws_day2_date, $nw
 						left join day_3 day3
 						on day1.location_id = day3.location_id
 				";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$data = (object) [
 				"date_time_day1" => $row['DATE_TIME_DAY1'],
 				"data_entry_date_day1" => $row['DATA_ENTRY_DATE_DAY1'],
@@ -198,27 +198,25 @@ function find_nws_forecast($db, $cwms_ts_id, $nws_day1_date, $nws_day2_date, $nw
 				"cwms_ts_id_day3" => $row['CWMS_TS_ID_DAY3'],
 				"location_id_day3" => $row['LOCATION_ID_DAY3']
 			];
-			
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_record_stage($db, $location_id) {
+function get_record_stage($db, $location_id)
+{
 	$stmnt_query = null;
 	$data = null;
-	
-	try {		
+
+	try {
 		$sql = "select location_id
 					,location_level_id
 					,level_date
@@ -226,13 +224,13 @@ function get_record_stage($db, $location_id) {
 					,level_unit
 				from CWMS_20.AV_LOCATION_LEVEL
 				where specified_level_id = 'Record Stage' 
-				and location_id = '".$location_id."' 
+				and location_id = '" . $location_id . "' 
 				and unit_system = 'EN'";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$data = (object) [
 				"location_id" => $row['LOCATION_ID'],
 				"location_level_id" => $row['LOCATION_LEVEL_ID'],
@@ -241,47 +239,46 @@ function get_record_stage($db, $location_id) {
 				"level_unit" => $row['LEVEL_UNIT']
 			];
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_table_data($db, $cwms_ts_id, $start_day, $end_day) {
+function get_table_data($db, $cwms_ts_id, $start_day, $end_day)
+{
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "select cwms_ts_id
 					,cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT' ) as date_time
-					,cwms_util.split_text('".$cwms_ts_id."' ,1,'.') as location_id
-					,cwms_util.split_text('".$cwms_ts_id."' ,2,'.') as parameter_id
-					,cwms_util.split_text('".$cwms_ts_id."' ,6,'.') as version_id
+					,cwms_util.split_text('" . $cwms_ts_id . "' ,1,'.') as location_id
+					,cwms_util.split_text('" . $cwms_ts_id . "' ,2,'.') as parameter_id
+					,cwms_util.split_text('" . $cwms_ts_id . "' ,6,'.') as version_id
 					,value
 					,unit_id
 					,quality_code
 				from cwms_v_tsv_dqu  tsv
 					where 
-						tsv.cwms_ts_id = '".$cwms_ts_id."'  
-						and date_time  >= cast(cast(current_date as timestamp) at time zone 'UTC' as date) + interval '".$start_day."' DAY
-						and date_time  <= cast(cast(current_date as timestamp) at time zone 'UTC' as date) + interval '".$end_day."' DAY
+						tsv.cwms_ts_id = '" . $cwms_ts_id . "'  
+						and date_time  >= cast(cast(current_date as timestamp) at time zone 'UTC' as date) + interval '" . $start_day . "' DAY
+						and date_time  <= cast(cast(current_date as timestamp) at time zone 'UTC' as date) + interval '" . $end_day . "' DAY
 						and (tsv.unit_id = 'ppm' or tsv.unit_id = 'F' or tsv.unit_id = CASE WHEN cwms_util.split_text(tsv.cwms_ts_id,2,'.') IN ('Stage','Elev','Opening') THEN 'ft' WHEN cwms_util.split_text(tsv.cwms_ts_id,2,'.') IN ('Precip','Depth') THEN 'in' END or tsv.unit_id = 'cfs' or tsv.unit_id = 'umho/cm' or tsv.unit_id = 'volt' or tsv.unit_id = 'ac-ft')
 						and tsv.office_id = 'MVS' 
 						and tsv.aliased_item is null
 					order by date_time desc";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$obj = (object) [
 				"cwms_ts_id" => $row['CWMS_TS_ID'],
 				"date_time" => $row['DATE_TIME'],
@@ -294,24 +291,23 @@ function get_table_data($db, $cwms_ts_id, $start_day, $end_day) {
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function find_nws_forecast2($db, $cwms_ts_id, $nws_day1_date, $nws_day2_date, $nws_day3_date) {
+function find_nws_forecast2($db, $cwms_ts_id, $nws_day1_date, $nws_day2_date, $nws_day3_date)
+{
 	$stmnt_query = null;
 	$data = null;
-	try {		
+	try {
 		$sql = "with cte_day1 as (select cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT') as date_time
 					,value
 					,cwms_ts_id
@@ -321,9 +317,9 @@ function find_nws_forecast2($db, $cwms_ts_id, $nws_day1_date, $nws_day2_date, $n
 					,to_char(cwms_util.change_timezone(data_entry_date, 'UTC', 'CST6CDT'), 'mm-dd-yyyy HH24:MI') as data_entry_date_org
 					,(cwms_util.change_timezone(data_entry_date, 'UTC', 'CST6CDT')) as data_entry_date_cst
 				from CWMS_20.AV_TSV_DQU
-				where cwms_ts_id = '".$cwms_ts_id."'
+				where cwms_ts_id = '" . $cwms_ts_id . "'
 					and unit_id = 'ft'
-					and date_time = to_date('".$nws_day1_date."' || '12:00' ,'mm-dd-yyyy hh24:mi')
+					and date_time = to_date('" . $nws_day1_date . "' || '12:00' ,'mm-dd-yyyy hh24:mi')
 				),
 				
 				day_2 as (
@@ -336,9 +332,9 @@ function find_nws_forecast2($db, $cwms_ts_id, $nws_day1_date, $nws_day2_date, $n
 					,to_char(cwms_util.change_timezone(data_entry_date, 'UTC', 'CST6CDT'), 'mm-dd-yyyy HH24:MI') as data_entry_date_org
 					,(cwms_util.change_timezone(data_entry_date, 'UTC', 'CST6CDT')) as data_entry_date_cst
 				from CWMS_20.AV_TSV_DQU
-				where cwms_ts_id = '".$cwms_ts_id."'
+				where cwms_ts_id = '" . $cwms_ts_id . "'
 					and unit_id = 'ft'
-					and date_time = to_date('".$nws_day2_date."' || '12:00' ,'mm-dd-yyyy hh24:mi')
+					and date_time = to_date('" . $nws_day2_date . "' || '12:00' ,'mm-dd-yyyy hh24:mi')
 				),
 				
 				day_3 as (
@@ -351,9 +347,9 @@ function find_nws_forecast2($db, $cwms_ts_id, $nws_day1_date, $nws_day2_date, $n
 					,to_char(cwms_util.change_timezone(data_entry_date, 'UTC', 'CST6CDT'), 'mm-dd-yyyy HH24:MI') as data_entry_date_org
 					,(cwms_util.change_timezone(data_entry_date, 'UTC', 'CST6CDT')) as data_entry_date_cst
 				from CWMS_20.AV_TSV_DQU
-				where cwms_ts_id = '".$cwms_ts_id."'
+				where cwms_ts_id = '" . $cwms_ts_id . "'
 					and unit_id = 'ft'
-					and date_time = to_date('".$nws_day3_date."' || '12:00' ,'mm-dd-yyyy hh24:mi')
+					and date_time = to_date('" . $nws_day3_date . "' || '12:00' ,'mm-dd-yyyy hh24:mi')
 				)
 				
 				select day1.date_time as date_time_day1, day1.value as value_day1, day1.cwms_ts_id as cwms_ts_id_day1, day1.location_id as location_id_day1, day1.unit_id as unit_id_day1, day1.data_entry_date as data_entry_date_day1, day1.data_entry_date_org as data_entry_date_org_day1, day1.data_entry_date_cst as data_entry_date_cst1
@@ -365,12 +361,12 @@ function find_nws_forecast2($db, $cwms_ts_id, $nws_day1_date, $nws_day2_date, $n
 						left join day_3 day3
 						on day1.location_id = day3.location_id
 				";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$data = (object) [
 				"date_time_day1" => $row['DATE_TIME_DAY1'],
 				"data_entry_date_day1" => $row['DATA_ENTRY_DATE_DAY1'],
@@ -399,39 +395,37 @@ function find_nws_forecast2($db, $cwms_ts_id, $nws_day1_date, $nws_day2_date, $n
 				"location_id_day3" => $row['LOCATION_ID_DAY3'],
 				"data_entry_date_cst3" => $row['DATA_ENTRY_DATE_CST3'],
 			];
-			
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_record_stage2($db, $cwms_ts_id) {
+function get_record_stage2($db, $cwms_ts_id)
+{
 	$stmnt_query = null;
 	$data = null;
-	
-	try {		
+
+	try {
 		$sql = "select location_id
 					,location_level_id
 					,level_date
 					,constant_level
 					,level_unit
 				from CWMS_20.AV_LOCATION_LEVEL
-				where specified_level_id = 'Record Stage' and location_id = cwms_util.split_text('".$cwms_ts_id."', 1, '.') and unit_system = 'EN'";
-		
+				where specified_level_id = 'Record Stage' and location_id = cwms_util.split_text('" . $cwms_ts_id . "', 1, '.') and unit_system = 'EN'";
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$data = (object) [
 				"location_id" => $row['LOCATION_ID'],
 				"location_level_id" => $row['LOCATION_LEVEL_ID'],
@@ -440,15 +434,12 @@ function get_record_stage2($db, $cwms_ts_id) {
 				"level_unit" => $row['LEVEL_UNIT']
 			];
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
-?>

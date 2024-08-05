@@ -1,10 +1,11 @@
 <?php
 
-function get_carlyle_forecast($db) {
+function get_carlyle_forecast($db)
+{
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "with cte_carlyle_today as (
 					select 'CARLYLE' as lake
 						,date_time
@@ -39,12 +40,12 @@ function get_carlyle_forecast($db) {
 				select lake, date_time, date_time_cst, fcst_date, fcst_date_cst, system_date_cst, date_time_2, outflow/1000 as outflow, station from cte_carlyle_5_days
 				order by date_time_2 asc
 				fetch next 6 row only";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$obj = (object) [
 				"lake" => $row['LAKE'],
 				"date_time" => $row['DATE_TIME'],
@@ -54,29 +55,28 @@ function get_carlyle_forecast($db) {
 				"system_date_cst" => $row['SYSTEM_DATE_CST'],
 				"date_time_2" => $row['DATE_TIME_2'],
 				"outflow" => $row['OUTFLOW'],
-				"station" => $row['STATION']			
+				"station" => $row['STATION']
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_shelbyville_forecast($db) {
+function get_shelbyville_forecast($db)
+{
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "with cte_SHELBYVILLE_today as (
 					select 'SHELBYVILLE' as lake
 						,date_time
@@ -111,12 +111,12 @@ function get_shelbyville_forecast($db) {
 				select lake, date_time, date_time_cst, fcst_date, fcst_date_cst, system_date_cst, date_time_2, outflow/1000 as outflow, station from cte_SHELBYVILLE_5_days
 				order by date_time_2 asc
 				fetch next 6 row only";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$obj = (object) [
 				"lake" => $row['LAKE'],
 				"date_time" => $row['DATE_TIME'],
@@ -126,29 +126,28 @@ function get_shelbyville_forecast($db) {
 				"system_date_cst" => $row['SYSTEM_DATE_CST'],
 				"date_time_2" => $row['DATE_TIME_2'],
 				"outflow" => $row['OUTFLOW'],
-				"station" => $row['STATION']			
+				"station" => $row['STATION']
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_wappapello_forecast($db) {
+function get_wappapello_forecast($db)
+{
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "with cte_WAPPAPELLO_today as (
 					select 'WAPPAPELLO' as lake
 						,date_time
@@ -183,12 +182,12 @@ function get_wappapello_forecast($db) {
 				select lake, date_time, date_time_cst, fcst_date, fcst_date_cst, system_date_cst, date_time_2, outflow/1000 as outflow, station from cte_WAPPAPELLO_5_days
 				order by date_time_2 asc
 				fetch next 6 row only";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$obj = (object) [
 				"lake" => $row['LAKE'],
 				"date_time" => $row['DATE_TIME'],
@@ -198,29 +197,28 @@ function get_wappapello_forecast($db) {
 				"system_date_cst" => $row['SYSTEM_DATE_CST'],
 				"date_time_2" => $row['DATE_TIME_2'],
 				"outflow" => $row['OUTFLOW'],
-				"station" => $row['STATION']			
+				"station" => $row['STATION']
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_rend_forecast($db) {
+function get_rend_forecast($db)
+{
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "with cte_REND_today as (
 					select 'REND' as lake
 						,date_time
@@ -255,12 +253,12 @@ function get_rend_forecast($db) {
 				select lake, date_time, date_time_cst, fcst_date, fcst_date_cst, system_date_cst, date_time_2, outflow/1000 as outflow, station from cte_REND_5_days
 				order by date_time_2 asc
 				fetch next 6 row only";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$obj = (object) [
 				"lake" => $row['LAKE'],
 				"date_time" => $row['DATE_TIME'],
@@ -270,29 +268,28 @@ function get_rend_forecast($db) {
 				"system_date_cst" => $row['SYSTEM_DATE_CST'],
 				"date_time_2" => $row['DATE_TIME_2'],
 				"outflow" => $row['OUTFLOW'],
-				"station" => $row['STATION']			
+				"station" => $row['STATION']
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_mark_twain_yesterday_forecast($db) {
+function get_mark_twain_yesterday_forecast($db)
+{
 	$stmnt_query = null;
 	$data = null;
-	
-	try {		
+
+	try {
 		$sql = "select 'Mark Twain Lk-Salt' as location_id
 					, cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') date_time
 					, value/1000 as value
@@ -305,39 +302,38 @@ function get_mark_twain_yesterday_forecast($db) {
 					and tsv.office_id = 'MVS' 
 					and tsv.aliased_item is null
 					and cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT') = to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'US/Central'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss') - interval '1' day";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$data = (object) [
 				"location_id" => $row['LOCATION_ID'],
 				"date_time" => $row['DATE_TIME'],
 				"value" => $row['VALUE'],
 				"unit_id" => $row['UNIT_ID'],
-				"station" => $row['STATION']			
+				"station" => $row['STATION']
 			];
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_mark_twain_forecast($db) {
+function get_mark_twain_forecast($db)
+{
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "select lake, 
 					date_time,
 					cwms_util.change_timezone(date_time, 'UTC', 'US/Central') as date_time_cst,
@@ -352,12 +348,12 @@ function get_mark_twain_forecast($db) {
 					and cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') = to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss')
 				order by date_time asc
 				fetch next 6 row only";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$obj = (object) [
 				"lake" => $row['LAKE'],
 				"date_time" => $row['DATE_TIME'],
@@ -367,29 +363,28 @@ function get_mark_twain_forecast($db) {
 				"system_date_cst" => $row['SYSTEM_DATE_CST'],
 				"date_time_2" => $row['DATE_TIME_2'],
 				"outflow" => $row['OUTFLOW'],
-				"station" => $row['STATION']			
+				"station" => $row['STATION']
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_ld24_pool($db) {
+function get_ld24_pool($db)
+{
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "with cte_ld24_pool as (
 			select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
 				,date_time
@@ -437,42 +432,41 @@ function get_ld24_pool($db) {
 			union all
 			select location_id, date_time, value, unit_id, quality_code, damlock
 			from cte_hinge";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$obj = (object) [
 				"location_id" => $row['LOCATION_ID'],
 				"date_time" => $row['DATE_TIME'],
 				"value" => $row['VALUE'],
 				"unit_id" => $row['UNIT_ID'],
 				"quality_code" => $row['QUALITY_CODE'],
-				"damlock" => $row['DAMLOCK']			
+				"damlock" => $row['DAMLOCK']
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_ld24_pool_2($db) {
+function get_ld24_pool_2($db)
+{
 	// remove current pool reading per NWS
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "with cte_ld24_pool_netmiss as (
 				select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
 					,date_time
@@ -502,41 +496,40 @@ function get_ld24_pool_2($db) {
 				union all
 				select location_id, date_time, value, unit_id, quality_code, damlock
 				from cte_hinge";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$obj = (object) [
 				"location_id" => $row['LOCATION_ID'],
 				"date_time" => $row['DATE_TIME'],
 				"value" => $row['VALUE'],
 				"unit_id" => $row['UNIT_ID'],
 				"quality_code" => $row['QUALITY_CODE'],
-				"damlock" => $row['DAMLOCK']			
+				"damlock" => $row['DAMLOCK']
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_ld24_tw($db) {
+function get_ld24_tw($db)
+{
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "with cte_ld24_tw as (
 			select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
 				,date_time
@@ -569,41 +562,40 @@ function get_ld24_tw($db) {
 			union all
 			select location_id, date_time, value, unit_id, quality_code, damlock
 			from cte_ld24_tw_netmiss";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$obj = (object) [
 				"location_id" => $row['LOCATION_ID'],
 				"date_time" => $row['DATE_TIME'],
 				"value" => $row['VALUE'],
 				"unit_id" => $row['UNIT_ID'],
 				"quality_code" => $row['QUALITY_CODE'],
-				"damlock" => $row['DAMLOCK']			
+				"damlock" => $row['DAMLOCK']
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_ld25_pool($db) {
+function get_ld25_pool($db)
+{
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "with cte_ld25_pool as (
 			select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
 				,date_time
@@ -651,42 +643,41 @@ function get_ld25_pool($db) {
 			union all
 			select location_id, date_time, value, unit_id, quality_code, damlock
 			from cte_hinge";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$obj = (object) [
 				"location_id" => $row['LOCATION_ID'],
 				"date_time" => $row['DATE_TIME'],
 				"value" => $row['VALUE'],
 				"unit_id" => $row['UNIT_ID'],
 				"quality_code" => $row['QUALITY_CODE'],
-				"damlock" => $row['DAMLOCK']			
+				"damlock" => $row['DAMLOCK']
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_ld25_pool_2($db) {
+function get_ld25_pool_2($db)
+{
 	// remove current pool reading per NWS
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "with cte_ld25_pool_netmiss as (
 				select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
 					,date_time
@@ -716,41 +707,40 @@ function get_ld25_pool_2($db) {
 				union all
 				select location_id, date_time, value, unit_id, quality_code, damlock
 				from cte_hinge";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$obj = (object) [
 				"location_id" => $row['LOCATION_ID'],
 				"date_time" => $row['DATE_TIME'],
 				"value" => $row['VALUE'],
 				"unit_id" => $row['UNIT_ID'],
 				"quality_code" => $row['QUALITY_CODE'],
-				"damlock" => $row['DAMLOCK']			
+				"damlock" => $row['DAMLOCK']
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_ld25_tw($db) {
+function get_ld25_tw($db)
+{
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "with cte_ld25_tw as (
 			select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
 				,date_time
@@ -783,41 +773,40 @@ function get_ld25_tw($db) {
 			union all
 			select location_id, date_time, value, unit_id, quality_code, damlock
 			from cte_ld25_tw_netmiss";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$obj = (object) [
 				"location_id" => $row['LOCATION_ID'],
 				"date_time" => $row['DATE_TIME'],
 				"value" => $row['VALUE'],
 				"unit_id" => $row['UNIT_ID'],
 				"quality_code" => $row['QUALITY_CODE'],
-				"damlock" => $row['DAMLOCK']			
+				"damlock" => $row['DAMLOCK']
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_ldmp_pool($db) {
+function get_ldmp_pool($db)
+{
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "with cte_ldpm_pool as (
 			select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
 				,date_time
@@ -865,42 +854,41 @@ function get_ldmp_pool($db) {
 			union all
 			select location_id, date_time, value, unit_id, quality_code, damlock
 			from cte_hinge";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$obj = (object) [
 				"location_id" => $row['LOCATION_ID'],
 				"date_time" => $row['DATE_TIME'],
 				"value" => $row['VALUE'],
 				"unit_id" => $row['UNIT_ID'],
 				"quality_code" => $row['QUALITY_CODE'],
-				"damlock" => $row['DAMLOCK']			
+				"damlock" => $row['DAMLOCK']
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_ldmp_pool_2($db) {
+function get_ldmp_pool_2($db)
+{
 	// remove current pool reading per NWS
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "with cte_ldpm_pool_netmiss as (
 				select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
 					,date_time
@@ -930,41 +918,40 @@ function get_ldmp_pool_2($db) {
 				union all
 				select location_id, date_time, value, unit_id, quality_code, damlock
 				from cte_hinge";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$obj = (object) [
 				"location_id" => $row['LOCATION_ID'],
 				"date_time" => $row['DATE_TIME'],
 				"value" => $row['VALUE'],
 				"unit_id" => $row['UNIT_ID'],
 				"quality_code" => $row['QUALITY_CODE'],
-				"damlock" => $row['DAMLOCK']			
+				"damlock" => $row['DAMLOCK']
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_ldmp_tw($db) {
+function get_ldmp_tw($db)
+{
 	$stmnt_query = null;
 	$data = [];
-	
-	try {		
+
+	try {
 		$sql = "with cte_ldmp_tw as (
 			select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
 				,date_time
@@ -997,41 +984,40 @@ function get_ldmp_tw($db) {
 			union all
 			select location_id, date_time, value, unit_id, quality_code, damlock
 			from cte_ldmp_tw_netmiss";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
-			
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
 			$obj = (object) [
 				"location_id" => $row['LOCATION_ID'],
 				"date_time" => $row['DATE_TIME'],
 				"value" => $row['VALUE'],
 				"unit_id" => $row['UNIT_ID'],
 				"quality_code" => $row['QUALITY_CODE'],
-				"damlock" => $row['DAMLOCK']			
+				"damlock" => $row['DAMLOCK']
 			];
 			array_push($data, $obj);
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_crest_forecast_carlyle($db) {
+function get_crest_forecast_carlyle($db)
+{
 	$stmnt_query = null;
 	$data = null;
-	
-	try {		
+
+	try {
 		$sql = "with cte_crest_data as (
 					select 
 						case
@@ -1057,11 +1043,11 @@ function get_crest_forecast_carlyle($db) {
 					,opt
 				from cte_crest_data
 				where project_id = 'Carlyle Lk-Kaskaskia'";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$data = (object) [
 				"project_id" => $row['PROJECT_ID'],
 				"crest" => $row['CREST'],
@@ -1070,24 +1056,23 @@ function get_crest_forecast_carlyle($db) {
 				"opt" => $row['OPT']
 			];
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_crest_forecast_shelbyville($db) {
+function get_crest_forecast_shelbyville($db)
+{
 	$stmnt_query = null;
 	$data = null;
-	
-	try {		
+
+	try {
 		$sql = "with cte_crest_data as (
 					select 
 						case
@@ -1113,11 +1098,11 @@ function get_crest_forecast_shelbyville($db) {
 					,opt
 				from cte_crest_data
 				where project_id = 'Lk Shelbyville-Kaskaskia'";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$data = (object) [
 				"project_id" => $row['PROJECT_ID'],
 				"crest" => $row['CREST'],
@@ -1126,24 +1111,23 @@ function get_crest_forecast_shelbyville($db) {
 				"opt" => $row['OPT']
 			];
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_crest_forecast_mark_twain($db) {
+function get_crest_forecast_mark_twain($db)
+{
 	$stmnt_query = null;
 	$data = null;
-	
-	try {		
+
+	try {
 		$sql = "with cte_crest_data as (
 					select 
 						case
@@ -1169,11 +1153,11 @@ function get_crest_forecast_mark_twain($db) {
 					,opt
 				from cte_crest_data
 				where project_id = 'Mark Twain Lk-Salt'";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$data = (object) [
 				"project_id" => $row['PROJECT_ID'],
 				"crest" => $row['CREST'],
@@ -1182,24 +1166,23 @@ function get_crest_forecast_mark_twain($db) {
 				"opt" => $row['OPT']
 			];
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_crest_forecast_wappapello($db) {
+function get_crest_forecast_wappapello($db)
+{
 	$stmnt_query = null;
 	$data = null;
-	
-	try {		
+
+	try {
 		$sql = "with cte_crest_data as (
 					select 
 						case
@@ -1225,11 +1208,11 @@ function get_crest_forecast_wappapello($db) {
 					,opt
 				from cte_crest_data
 				where project_id = 'Wappapello Lk-St Francis'";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$data = (object) [
 				"project_id" => $row['PROJECT_ID'],
 				"crest" => $row['CREST'],
@@ -1238,24 +1221,23 @@ function get_crest_forecast_wappapello($db) {
 				"opt" => $row['OPT']
 			];
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_crest_forecast_rend($db) {
+function get_crest_forecast_rend($db)
+{
 	$stmnt_query = null;
 	$data = null;
-	
-	try {		
+
+	try {
 		$sql = "with cte_crest_data as (
 					select 
 						case
@@ -1281,11 +1263,11 @@ function get_crest_forecast_rend($db) {
 					,opt
 				from cte_crest_data
 				where project_id = 'Rend Lk-Big Muddy'";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$data = (object) [
 				"project_id" => $row['PROJECT_ID'],
 				"crest" => $row['CREST'],
@@ -1294,24 +1276,23 @@ function get_crest_forecast_rend($db) {
 				"opt" => $row['OPT']
 			];
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_roller_tainter_ld24($db) {
+function get_roller_tainter_ld24($db)
+{
 	$stmnt_query = null;
 	$data = null;
-	
-	try {		
+
+	try {
 		$sql = "select cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT') as date_time
 					,value
 					,cwms_ts_id
@@ -1325,11 +1306,11 @@ function get_roller_tainter_ld24($db) {
 					and date_time  <= cast(cast(current_date as timestamp) at time zone 'UTC' as date) 
 				order by date_time desc
 				fetch first 1 rows only";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$data = (object) [
 				"date_time" => $row['DATE_TIME'],
 				"value" => $row['VALUE'],
@@ -1338,24 +1319,23 @@ function get_roller_tainter_ld24($db) {
 				"location_id" => $row['LOCATION_ID']
 			];
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_roller_tainter_ld25($db) {
+function get_roller_tainter_ld25($db)
+{
 	$stmnt_query = null;
 	$data = null;
-	
-	try {		
+
+	try {
 		$sql = "select cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT') as date_time
 					,value
 					,cwms_ts_id
@@ -1369,11 +1349,11 @@ function get_roller_tainter_ld25($db) {
 					and date_time  <= cast(cast(current_date as timestamp) at time zone 'UTC' as date) 
 				order by date_time desc
 				fetch first 1 rows only";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$data = (object) [
 				"date_time" => $row['DATE_TIME'],
 				"value" => $row['VALUE'],
@@ -1382,24 +1362,23 @@ function get_roller_tainter_ld25($db) {
 				"location_id" => $row['LOCATION_ID']
 			];
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_roller_tainter_ldmp($db) {
+function get_roller_tainter_ldmp($db)
+{
 	$stmnt_query = null;
 	$data = null;
-	
-	try {		
+
+	try {
 		$sql = "select cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT') as date_time
 					,value
 					,cwms_ts_id
@@ -1413,11 +1392,11 @@ function get_roller_tainter_ldmp($db) {
 					and date_time  <= cast(cast(current_date as timestamp) at time zone 'UTC' as date) 
 				order by date_time desc
 				fetch first 1 rows only";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$data = (object) [
 				"date_time" => $row['DATE_TIME'],
 				"value" => $row['VALUE'],
@@ -1426,17 +1405,14 @@ function get_roller_tainter_ldmp($db) {
 				"location_id" => $row['LOCATION_ID']
 			];
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-?>

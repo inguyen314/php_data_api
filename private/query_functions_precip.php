@@ -1,11 +1,12 @@
 <?php
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-function get_precip_data_inc_cum($db, $cwms_ts_id) {
+function get_precip_data_inc_cum($db, $cwms_ts_id)
+{
 	$stmnt_query = null;
 	$data = null;
-	
-	try {		
+
+	try {
 		$sql = "with cte_last_max as (                
 					select ts_code, 
 						date_time, 
@@ -16,7 +17,7 @@ function get_precip_data_inc_cum($db, $cwms_ts_id) {
 						unit_id, 
 						quality_code
 					from CWMS_20.AV_TSV_DQU_30D
-					where cwms_ts_id = '".$cwms_ts_id."'
+					where cwms_ts_id = '" . $cwms_ts_id . "'
 					and unit_id = 'in'
 					order by date_time desc
 					fetch first 1 rows only
@@ -31,7 +32,7 @@ function get_precip_data_inc_cum($db, $cwms_ts_id) {
 						unit_id, 
 						quality_code
 					from CWMS_20.AV_TSV_DQU_30D
-					where cwms_ts_id = '".$cwms_ts_id."'
+					where cwms_ts_id = '" . $cwms_ts_id . "'
 					and unit_id = 'in'
 					and date_time = to_date((select (date_time - interval '6' hour) from cte_last_max) ,'mm-dd-yyyy hh24:mi:ss')
 					order by date_time desc
@@ -47,7 +48,7 @@ function get_precip_data_inc_cum($db, $cwms_ts_id) {
 						unit_id, 
 						quality_code
 					from CWMS_20.AV_TSV_DQU_30D
-					where cwms_ts_id = '".$cwms_ts_id."'
+					where cwms_ts_id = '" . $cwms_ts_id . "'
 					and unit_id = 'in'
 					and date_time = to_date((select (date_time - interval '12' hour) from cte_last_max) ,'mm-dd-yyyy hh24:mi:ss')
 					order by date_time desc
@@ -63,7 +64,7 @@ function get_precip_data_inc_cum($db, $cwms_ts_id) {
 						unit_id, 
 						quality_code
 					from CWMS_20.AV_TSV_DQU_30D
-					where cwms_ts_id = '".$cwms_ts_id."'
+					where cwms_ts_id = '" . $cwms_ts_id . "'
 					and unit_id = 'in'
 					and date_time = to_date((select (date_time - interval '18' hour) from cte_last_max) ,'mm-dd-yyyy hh24:mi:ss')
 					order by date_time desc
@@ -79,7 +80,7 @@ function get_precip_data_inc_cum($db, $cwms_ts_id) {
 						unit_id, 
 						quality_code
 					from CWMS_20.AV_TSV_DQU_30D
-					where cwms_ts_id = '".$cwms_ts_id."'
+					where cwms_ts_id = '" . $cwms_ts_id . "'
 					and unit_id = 'in'
 					and date_time = to_date((select (date_time - interval '24' hour) from cte_last_max) ,'mm-dd-yyyy hh24:mi:ss')
 					order by date_time desc
@@ -95,7 +96,7 @@ function get_precip_data_inc_cum($db, $cwms_ts_id) {
 						unit_id, 
 						quality_code
 					from CWMS_20.AV_TSV_DQU_30D
-					where cwms_ts_id = '".$cwms_ts_id."'
+					where cwms_ts_id = '" . $cwms_ts_id . "'
 					and unit_id = 'in'
 					and date_time = to_date((select (date_time - interval '30' hour) from cte_last_max) ,'mm-dd-yyyy hh24:mi:ss')
 					order by date_time desc
@@ -111,7 +112,7 @@ function get_precip_data_inc_cum($db, $cwms_ts_id) {
 						unit_id, 
 						quality_code
 					from CWMS_20.AV_TSV_DQU_30D
-					where cwms_ts_id = '".$cwms_ts_id."'
+					where cwms_ts_id = '" . $cwms_ts_id . "'
 					and unit_id = 'in'
 					and date_time = to_date((select (date_time - interval '36' hour) from cte_last_max) ,'mm-dd-yyyy hh24:mi:ss')
 					order by date_time desc
@@ -127,7 +128,7 @@ function get_precip_data_inc_cum($db, $cwms_ts_id) {
 						unit_id, 
 						quality_code
 					from CWMS_20.AV_TSV_DQU_30D
-					where cwms_ts_id = '".$cwms_ts_id."'
+					where cwms_ts_id = '" . $cwms_ts_id . "'
 					and unit_id = 'in'
 					and date_time = to_date((select (date_time - interval '42' hour) from cte_last_max) ,'mm-dd-yyyy hh24:mi:ss')
 					order by date_time desc
@@ -143,7 +144,7 @@ function get_precip_data_inc_cum($db, $cwms_ts_id) {
 						unit_id, 
 						quality_code
 					from CWMS_20.AV_TSV_DQU_30D
-					where cwms_ts_id = '".$cwms_ts_id."'
+					where cwms_ts_id = '" . $cwms_ts_id . "'
 					and unit_id = 'in'
 					and date_time = to_date((select (date_time - interval '48' hour) from cte_last_max) ,'mm-dd-yyyy hh24:mi:ss')
 					order by date_time desc
@@ -159,7 +160,7 @@ function get_precip_data_inc_cum($db, $cwms_ts_id) {
 						unit_id, 
 						quality_code
 					from CWMS_20.AV_TSV_DQU_30D
-					where cwms_ts_id = '".$cwms_ts_id."'
+					where cwms_ts_id = '" . $cwms_ts_id . "'
 					and unit_id = 'in'
 					and date_time = to_date((select (date_time - interval '54' hour) from cte_last_max) ,'mm-dd-yyyy hh24:mi:ss')
 					order by date_time desc
@@ -175,7 +176,7 @@ function get_precip_data_inc_cum($db, $cwms_ts_id) {
 						unit_id, 
 						quality_code
 					from CWMS_20.AV_TSV_DQU_30D
-					where cwms_ts_id = '".$cwms_ts_id."'
+					where cwms_ts_id = '" . $cwms_ts_id . "'
 					and unit_id = 'in'
 					and date_time = to_date((select (date_time - interval '60' hour) from cte_last_max) ,'mm-dd-yyyy hh24:mi:ss')
 					order by date_time desc
@@ -191,7 +192,7 @@ function get_precip_data_inc_cum($db, $cwms_ts_id) {
 						unit_id, 
 						quality_code
 					from CWMS_20.AV_TSV_DQU_30D
-					where cwms_ts_id = '".$cwms_ts_id."'
+					where cwms_ts_id = '" . $cwms_ts_id . "'
 					and unit_id = 'in'
 					and date_time = to_date((select (date_time - interval '66' hour) from cte_last_max) ,'mm-dd-yyyy hh24:mi:ss')
 					order by date_time desc
@@ -207,7 +208,7 @@ function get_precip_data_inc_cum($db, $cwms_ts_id) {
 						unit_id, 
 						quality_code
 					from CWMS_20.AV_TSV_DQU_30D
-					where cwms_ts_id = '".$cwms_ts_id."'
+					where cwms_ts_id = '" . $cwms_ts_id . "'
 					and unit_id = 'in'
 					and date_time = to_date((select (date_time - interval '72' hour) from cte_last_max) ,'mm-dd-yyyy hh24:mi:ss')
 					order by date_time desc
@@ -271,11 +272,11 @@ function get_precip_data_inc_cum($db, $cwms_ts_id) {
 															on last_max.cwms_ts_id = cte_66_hr.cwms_ts_id
 																left join cte_72_hr cte_72_hr
 																on last_max.cwms_ts_id = cte_72_hr.cwms_ts_id";
-		
+
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
 
-		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC+OCI_RETURN_NULLS)) !== false) {
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
 			$data = (object) [
 				"ts_code" => $row['TS_CODE'],
 				"date_time" => $row['DATE_TIME'],
@@ -312,18 +313,15 @@ function get_precip_data_inc_cum($db, $cwms_ts_id) {
 				"date_time_72" => $row['DATE_TIME_72']
 			];
 		}
-	}
-	catch (Exception $e) {
-		$e = oci_error($db);  
+	} catch (Exception $e) {
+		$e = oci_error($db);
 		trigger_error(htmlentities($e['message']), E_USER_ERROR);
 
 		return null;
-	}
-	finally {
-		oci_free_statement($stmnt_query); 
+	} finally {
+		oci_free_statement($stmnt_query);
 	}
 	return $data;
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
-?>
