@@ -22532,7 +22532,7 @@
                 "tsid_netmiss_upstream_stage_rev": "LD 24 TW-Mississippi.Stage.Inst.30Minutes.0.lrgsShef-rev",
                 "tsid_netmiss_downstream_flood": null,
                 "tsid_netmiss_upstream": null,
-                "tsid_netmiss_downstream": null,
+                "tsid_netmiss_downstream": "LD 25 Pool-Mississippi.Elev.Inst.~1Day.0.netmiss-fcst",
                 "record_stage_date_hard_coded": "07-29-1993",
                 "netmiss_data_location": null,
                 "tsid_interpolate_location": true,
