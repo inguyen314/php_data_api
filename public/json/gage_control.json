@@ -22748,7 +22748,7 @@
                 "tsid_tw_do_board": null,
                 "board_lib_note": null,
                 "board_lib_title": null,
-                "display_board": "True",
+                "display_board": null,
                 "tsid_netmiss_downstream_stage_rev_2": null,
                 "tsid_rating_id_special_1": null,
                 "tsid_netmiss_special_gage_3": null,
