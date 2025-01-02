@@ -38,7 +38,7 @@ function get_carlyle_forecast($db)
 				select lake, date_time, date_time_cst, fcst_date, fcst_date_cst, system_date_cst, date_time_2, outflow/1000 as outflow, station from cte_carlyle_today
 				union all 
 				select lake, date_time, date_time_cst, fcst_date, fcst_date_cst, system_date_cst, date_time_2, outflow/1000 as outflow, station from cte_carlyle_5_days
-				order by date_time_2 asc
+				order by date_time asc
 				fetch next 6 row only";
 
 		$stmnt_query = oci_parse($db, $sql);
@@ -109,7 +109,7 @@ function get_shelbyville_forecast($db)
 				select lake, date_time, date_time_cst, fcst_date, fcst_date_cst, system_date_cst, date_time_2, outflow/1000 as outflow, station from cte_SHELBYVILLE_today
 				union all 
 				select lake, date_time, date_time_cst, fcst_date, fcst_date_cst, system_date_cst, date_time_2, outflow/1000 as outflow, station from cte_SHELBYVILLE_5_days
-				order by date_time_2 asc
+				order by date_time asc
 				fetch next 6 row only";
 
 		$stmnt_query = oci_parse($db, $sql);
@@ -180,7 +180,7 @@ function get_wappapello_forecast($db)
 				select lake, date_time, date_time_cst, fcst_date, fcst_date_cst, system_date_cst, date_time_2, outflow/1000 as outflow, station from cte_WAPPAPELLO_today
 				union all 
 				select lake, date_time, date_time_cst, fcst_date, fcst_date_cst, system_date_cst, date_time_2, outflow/1000 as outflow, station from cte_WAPPAPELLO_5_days
-				order by date_time_2 asc
+				order by date_time asc
 				fetch next 6 row only";
 
 		$stmnt_query = oci_parse($db, $sql);
@@ -251,7 +251,7 @@ function get_rend_forecast($db)
 				select lake, date_time, date_time_cst, fcst_date, fcst_date_cst, system_date_cst, date_time_2, outflow/1000 as outflow, station from cte_REND_today
 				union all 
 				select lake, date_time, date_time_cst, fcst_date, fcst_date_cst, system_date_cst, date_time_2, outflow/1000 as outflow, station from cte_REND_5_days
-				order by date_time_2 asc
+				order by date_time asc
 				fetch next 6 row only";
 
 		$stmnt_query = oci_parse($db, $sql);
