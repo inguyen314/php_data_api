@@ -379,6 +379,57 @@ function get_mark_twain_forecast($db)
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
+function get_mark_twain_forecast_no_rounding($db)
+{
+	$stmnt_query = null;
+	$data = [];
+
+	try {
+		$sql = "select lake, 
+					date_time,
+					cwms_util.change_timezone(date_time, 'UTC', 'US/Central') as date_time_cst,
+					fcst_date,
+					cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') as fcst_date_cst,
+					to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'US/Central'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss') as system_date_cst,
+					to_char(date_time, 'mm-dd-yyyy') as date_time_2, 
+					outflow as outflow,
+					'CDAM7' as station
+				from wm_mvs_lake.qlev_fcst 
+				where lake = 'MT'
+					and cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') = to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss')
+				order by date_time asc
+				fetch next 6 row only";
+
+		$stmnt_query = oci_parse($db, $sql);
+		$status = oci_execute($stmnt_query);
+
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
+			$obj = (object) [
+				"lake" => $row['LAKE'],
+				"date_time" => $row['DATE_TIME'],
+				"date_time_cst" => $row['DATE_TIME_CST'],
+				"fcst_date" => $row['FCST_DATE'],
+				"fcst_date_cst" => $row['FCST_DATE_CST'],
+				"system_date_cst" => $row['SYSTEM_DATE_CST'],
+				"date_time_2" => $row['DATE_TIME_2'],
+				"outflow" => $row['OUTFLOW'],
+				"station" => $row['STATION']
+			];
+			array_push($data, $obj);
+		}
+	} catch (Exception $e) {
+		$e = oci_error($db);
+		trigger_error(htmlentities($e['message']), E_USER_ERROR);
+
+		return null;
+	} finally {
+		oci_free_statement($stmnt_query);
+	}
+	return $data;
+}
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 function get_ld24_pool($db)
 {
 	$stmnt_query = null;
