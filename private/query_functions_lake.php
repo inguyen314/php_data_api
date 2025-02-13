@@ -1473,23 +1473,24 @@ function get_norton_bridge($db)
 	$data = [];
 
 	try {
-		$sql = "with cte_ldpm_pool as (
-			select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
-				,date_time
-				,round(value,2) as value
-				,unit_id
-				,quality_code
-				,'CDAM7' as damlock
-			from cwms_v_tsv_dqu_24h tsv
-			where 
-				 tsv.cwms_ts_id = 'Norton Bridge-Salt.Flow.Inst.15Minutes.0.RatingUSGS'
-				 and tsv.unit_id = 'cfs'
-				 and date_time = to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
-				 and tsv.office_id = 'MVS' 
-				 and tsv.aliased_item is null
-			)
-			select location_id, date_time, value, unit_id, quality_code, damlock
-			from cte_ldpm_pool";
+		$sql = "WITH cte_ldpm_pool AS (
+    SELECT cwms_util.split_text(cwms_ts_id, 1, '.') AS location_id,
+           cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT') AS date_time,
+           ROUND(value, 2) AS value,
+           unit_id,
+           quality_code,
+           'CDAM7' AS damlock
+    FROM cwms_v_tsv_dqu_24h tsv
+    WHERE tsv.cwms_ts_id = 'Norton Bridge-Salt.Flow.Inst.15Minutes.0.RatingUSGS'
+      AND tsv.unit_id = 'cfs'
+      AND TRUNC(cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT')) =
+          TRUNC(cwms_util.change_timezone(SYSDATE, 'UTC', 'CST6CDT'))
+      AND TO_CHAR(cwms_util.change_timezone(tsv.date_time, 'UTC', 'CST6CDT'), 'HH24:MI:SS') = '06:00:00'
+      AND tsv.office_id = 'MVS'
+      AND tsv.aliased_item IS NULL
+)
+SELECT location_id, date_time, value, unit_id, quality_code, damlock
+FROM cte_ldpm_pool";
 
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
