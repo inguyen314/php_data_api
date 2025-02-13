@@ -1467,3 +1467,52 @@ function get_roller_tainter_ldmp($db)
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
+function get_norton_bridge($db)
+{
+	$stmnt_query = null;
+	$data = [];
+
+	try {
+		$sql = "with cte_ldpm_pool as (
+			select cwms_util.split_text(cwms_ts_id, 1, '.') as location_id
+				,date_time
+				,round(value,2) as value
+				,unit_id
+				,quality_code
+				,'CDAM7' as damlock
+			from cwms_v_tsv_dqu_24h tsv
+			where 
+				 tsv.cwms_ts_id = 'Norton Bridge-Salt.Flow.Inst.15Minutes.0.RatingUSGS'
+				 and tsv.unit_id = 'cfs'
+				 and date_time = to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy') || '06:00:00','mm-dd-yyyy hh24:mi:ss')
+				 and tsv.office_id = 'MVS' 
+				 and tsv.aliased_item is null
+			)
+			select location_id, date_time, value, unit_id, quality_code, damlock
+			from cte_ldpm_pool";
+
+		$stmnt_query = oci_parse($db, $sql);
+		$status = oci_execute($stmnt_query);
+
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
+			$obj = (object) [
+				"location_id" => $row['LOCATION_ID'],
+				"date_time" => $row['DATE_TIME'],
+				"value" => $row['VALUE'],
+				"unit_id" => $row['UNIT_ID'],
+				"quality_code" => $row['QUALITY_CODE'],
+				"damlock" => $row['DAMLOCK']
+			];
+			array_push($data, $obj);
+		}
+	} catch (Exception $e) {
+		$e = oci_error($db);
+		trigger_error(htmlentities($e['message']), E_USER_ERROR);
+
+		return null;
+	} finally {
+		oci_free_statement($stmnt_query);
+	}
+	return $data;
+}
