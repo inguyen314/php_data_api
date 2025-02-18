@@ -398,7 +398,7 @@ function get_mark_twain_forecast_no_rounding($db)
 				where lake = 'MT'
 					and cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') = to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss')
 				order by date_time asc
-				fetch next 6 row only";
+				fetch next 7 row only";
 
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
