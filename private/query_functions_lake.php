@@ -328,6 +328,52 @@ function get_mark_twain_yesterday_forecast($db)
 }
 //------------------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------------------
+function get_mark_twain_yesterday_forecast_2025($db)
+{
+	$stmnt_query = null;
+	$data = null;
+
+	try {
+		$sql = "select 'Mark Twain Lk-Salt' as location_id
+				, tsv.date_time as date_time
+				, value / 1000 as value
+				, unit_id
+				, 'CDAM7' as station
+			from cwms_v_tsv_dqu_30d tsv
+			where tsv.cwms_ts_id = 'Mark Twain Lk-Salt.Flow-Turb.Ave.~1Day.1Day.lakerep-rev'
+				and tsv.unit_id = 'cfs'
+				and tsv.office_id = 'MVS'
+				and tsv.aliased_item is null
+				and tsv.date_time >= trunc(sysdate - interval '1' day) -- Midnight of yesterday
+				and tsv.date_time < trunc(sysdate) -- Midnight of today
+				order by date_time asc
+			fetch first 1 row only";
+
+		$stmnt_query = oci_parse($db, $sql);
+		$status = oci_execute($stmnt_query);
+
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
+			$data = (object) [
+				"location_id" => $row['LOCATION_ID'],
+				"date_time" => $row['DATE_TIME'],
+				"value" => $row['VALUE'],
+				"unit_id" => $row['UNIT_ID'],
+				"station" => $row['STATION']
+			];
+		}
+	} catch (Exception $e) {
+		$e = oci_error($db);
+		trigger_error(htmlentities($e['message']), E_USER_ERROR);
+
+		return null;
+	} finally {
+		oci_free_statement($stmnt_query);
+	}
+	return $data;
+}
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 function get_mark_twain_forecast($db)
 {
 	$stmnt_query = null;
@@ -397,6 +443,57 @@ function get_mark_twain_forecast_no_rounding($db)
 				from wm_mvs_lake.qlev_fcst 
 				where lake = 'MT'
 					and cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') = to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'CST6CDT'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss')
+				order by date_time asc
+				fetch next 7 row only";
+
+		$stmnt_query = oci_parse($db, $sql);
+		$status = oci_execute($stmnt_query);
+
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
+			$obj = (object) [
+				"lake" => $row['LAKE'],
+				"date_time" => $row['DATE_TIME'],
+				"date_time_cst" => $row['DATE_TIME_CST'],
+				"fcst_date" => $row['FCST_DATE'],
+				"fcst_date_cst" => $row['FCST_DATE_CST'],
+				"system_date_cst" => $row['SYSTEM_DATE_CST'],
+				"date_time_2" => $row['DATE_TIME_2'],
+				"outflow" => $row['OUTFLOW'],
+				"station" => $row['STATION']
+			];
+			array_push($data, $obj);
+		}
+	} catch (Exception $e) {
+		$e = oci_error($db);
+		trigger_error(htmlentities($e['message']), E_USER_ERROR);
+
+		return null;
+	} finally {
+		oci_free_statement($stmnt_query);
+	}
+	return $data;
+}
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
+function get_mark_twain_forecast_no_rounding_2025($db)
+{
+	$stmnt_query = null;
+	$data = [];
+
+	try {
+		$sql = "select lake, 
+					date_time,
+					cwms_util.change_timezone(date_time, 'UTC', 'US/Central') as date_time_cst,
+					fcst_date,
+					cwms_util.change_timezone(fcst_date, 'UTC', 'US/Central') as fcst_date_cst,
+					to_date(to_char(cwms_util.change_timezone(sysdate, 'UTC', 'US/Central'),'mm-dd-yyyy') || '00:00:00','mm-dd-yyyy hh24:mi:ss') as system_date_cst,
+					to_char(date_time, 'mm-dd-yyyy') as date_time_2, 
+					outflow as outflow,
+					'CDAM7' as station
+				from wm_mvs_lake.qlev_fcst 
+				where lake = 'MT'
+                and fcst_date >= trunc(sysdate - interval '0' day)
 				order by date_time asc
 				fetch next 7 row only";
 
@@ -1491,6 +1588,56 @@ function get_norton_bridge($db)
 )
 SELECT location_id, date_time, value, unit_id, quality_code, damlock
 FROM cte_ldpm_pool";
+
+		$stmnt_query = oci_parse($db, $sql);
+		$status = oci_execute($stmnt_query);
+
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+
+			$obj = (object) [
+				"location_id" => $row['LOCATION_ID'],
+				"date_time" => $row['DATE_TIME'],
+				"value" => $row['VALUE'],
+				"unit_id" => $row['UNIT_ID'],
+				"quality_code" => $row['QUALITY_CODE'],
+				"damlock" => $row['DAMLOCK']
+			];
+			array_push($data, $obj);
+		}
+	} catch (Exception $e) {
+		$e = oci_error($db);
+		trigger_error(htmlentities($e['message']), E_USER_ERROR);
+
+		return null;
+	} finally {
+		oci_free_statement($stmnt_query);
+	}
+	return $data;
+}
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
+function get_norton_bridge_2025($db)
+{
+	$stmnt_query = null;
+	$data = [];
+
+	try {
+		$sql = "WITH cte_ldpm_pool AS (
+					SELECT cwms_util.split_text(cwms_ts_id, 1, '.') AS location_id,
+						cwms_util.change_timezone(date_time, 'UTC', 'CST6CDT') AS date_time,
+						ROUND(value, 2) AS value,
+						unit_id,
+						quality_code,
+						'CDAM7' AS damlock
+					FROM cwms_v_tsv_dqu_24h tsv
+					WHERE tsv.cwms_ts_id = 'Norton Bridge-Salt.Flow.Inst.15Minutes.0.RatingUSGS'
+					AND tsv.unit_id = 'cfs'
+					AND tsv.office_id = 'MVS'
+					AND tsv.aliased_item IS NULL
+				)
+				SELECT location_id, date_time, value, unit_id, quality_code, damlock
+				FROM cte_ldpm_pool
+				WHERE date_time = TRUNC(SYSDATE) + INTERVAL '6' HOUR";
 
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
