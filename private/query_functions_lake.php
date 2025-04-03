@@ -556,7 +556,7 @@ function get_ld24_pool($db)
 				,quality_code
 				,'CLKM7' as damlock
 			from cwms_v_tsv_dqu
-			where cwms_ts_id ='LD 24 Pool-Mississippi.Elev.Inst.~1Day.0.netmiss-compv2' and unit_id = 'ft'
+			where cwms_ts_id ='LD 24 Pool-Mississippi.Elev.Inst.~1Day.0.netmiss-fcst' and unit_id = 'ft'
 			and date_time > to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '0' DAY
 			and date_time < to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '5' DAY
 			),
@@ -623,7 +623,7 @@ function get_ld24_pool_2($db)
 					,quality_code
 					,'CLKM7' as damlock
 				from cwms_v_tsv_dqu
-				where cwms_ts_id ='LD 24 Pool-Mississippi.Elev.Inst.~1Day.0.netmiss-compv2' and unit_id = 'ft'
+				where cwms_ts_id ='LD 24 Pool-Mississippi.Elev.Inst.~1Day.0.netmiss-fcst' and unit_id = 'ft'
 				and date_time > to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '0' DAY
 				and date_time < to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '5' DAY
 				),
@@ -767,7 +767,7 @@ function get_ld25_pool($db)
 				,quality_code
 				,'CAGM7' as damlock
 			from cwms_v_tsv_dqu
-			where cwms_ts_id ='LD 25 Pool-Mississippi.Elev.Inst.~1Day.0.netmiss-compv2' and unit_id = 'ft'
+			where cwms_ts_id ='LD 25 Pool-Mississippi.Elev.Inst.~1Day.0.netmiss-fcst' and unit_id = 'ft'
 			and date_time > to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '0' DAY
 			and date_time < to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '5' DAY
 			),
@@ -834,7 +834,7 @@ function get_ld25_pool_2($db)
 					,quality_code
 					,'CAGM7' as damlock
 				from cwms_v_tsv_dqu
-				where cwms_ts_id ='LD 25 Pool-Mississippi.Elev.Inst.~1Day.0.netmiss-compv2' and unit_id = 'ft'
+				where cwms_ts_id ='LD 25 Pool-Mississippi.Elev.Inst.~1Day.0.netmiss-fcst' and unit_id = 'ft'
 				and date_time > to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '0' DAY
 				and date_time < to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '5' DAY
 				),
@@ -978,7 +978,7 @@ function get_ldmp_pool($db)
 				,quality_code
 				,'ALNI2' as damlock
 			from cwms_v_tsv_dqu
-			where cwms_ts_id ='Mel Price Pool-Mississippi.Elev.Inst.~1Day.0.netmiss-compv2' and unit_id = 'ft'
+			where cwms_ts_id ='Mel Price Pool-Mississippi.Elev.Inst.~1Day.0.netmiss-fcst' and unit_id = 'ft'
 			and date_time > to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '0' DAY
 			and date_time < to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '5' DAY
 			),
@@ -1045,7 +1045,7 @@ function get_ldmp_pool_2($db)
 					,quality_code
 					,'ALNI2' as damlock
 				from cwms_v_tsv_dqu
-				where cwms_ts_id ='Mel Price Pool-Mississippi.Elev.Inst.~1Day.0.netmiss-compv2' and unit_id = 'ft'
+				where cwms_ts_id ='Mel Price Pool-Mississippi.Elev.Inst.~1Day.0.netmiss-fcst' and unit_id = 'ft'
 				and date_time > to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '0' DAY
 				and date_time < to_date( to_char(sysdate, 'mm-dd-yyyy hh24:mm:ss') ,'mm-dd-yyyy hh24:mi:ss') + interval '5' DAY
 				),
