@@ -359,8 +359,7 @@ function find_nws_forecast2($db, $cwms_ts_id, $nws_day1_date, $nws_day2_date, $n
 					left join day_2 day2
 					on day1.location_id = day2.location_id
 						left join day_3 day3
-						on day1.location_id = day3.location_id
-				";
+						on day1.location_id = day3.location_id";
 
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
@@ -432,6 +431,48 @@ function get_record_stage2($db, $cwms_ts_id)
 				"level_date" => $row['LEVEL_DATE'],
 				"constant_level" => $row['CONSTANT_LEVEL'],
 				"level_unit" => $row['LEVEL_UNIT']
+			];
+		}
+	} catch (Exception $e) {
+		$e = oci_error($db);
+		trigger_error(htmlentities($e['message']), E_USER_ERROR);
+		return null;
+	} finally {
+		oci_free_statement($stmnt_query);
+	}
+	return $data;
+}
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
+function get_nws_crest($db, $cwms_ts_id)
+{
+	$stmnt_query = null;
+	$data = null;
+
+	try {
+		$sql = "select 
+		 cwms_ts_id,
+        round(value, 2) as value,
+        wm_mvs_cf.util.tz_conv(date_time, 'GMT', 'US/Central') as date_time,
+        wm_mvs_cf.util.tz_conv(data_entry_date, 'GMT', 'US/Central') as data_entry_date
+        from cwms_v_tsv_dqu_30d
+        where cwms_ts_id = '" . $cwms_ts_id . "'
+        and unit_id = 'ft'
+        and value > -1000
+        --and to_char(date_time, 'HH24:MI') like '12:00'
+        and data_entry_date > sysdate - 1
+        and date_time > trunc(sysdate + 1)
+        order by date_time asc, data_entry_date desc";
+
+		$stmnt_query = oci_parse($db, $sql);
+		$status = oci_execute($stmnt_query);
+
+		while (($row = oci_fetch_array($stmnt_query, OCI_ASSOC + OCI_RETURN_NULLS)) !== false) {
+			$data = (object) [
+				"cwms_ts_id" => $row['CWMS_TS_ID'],
+				"value" => $row['VALUE'],
+				"date_time" => $row['DATE_TIME'],
+				"data_entry_date" => $row['DATA_ENTRY_DATE']
 			];
 		}
 	} catch (Exception $e) {
