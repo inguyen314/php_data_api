@@ -462,7 +462,8 @@ function get_nws_crest($db, $cwms_ts_id)
         --and to_char(date_time, 'HH24:MI') like '12:00'
         and data_entry_date > sysdate - 1
         and date_time > trunc(sysdate + 1)
-        order by date_time asc, data_entry_date desc";
+        order by data_entry_date desc
+        fetch first 1 rows only";
 
 		$stmnt_query = oci_parse($db, $sql);
 		$status = oci_execute($stmnt_query);
